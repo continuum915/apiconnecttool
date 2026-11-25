@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="ApiConnectTool/ApiConnectTool.csproj" />
+  <Project Path="ApiConnectTool.Tests/ApiConnectTool.Tests.csproj" />
+  <Project Path="Win7AeroTheme/Win7AeroTheme.csproj" />
+</Solution>

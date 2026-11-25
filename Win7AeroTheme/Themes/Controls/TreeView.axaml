@@ -1,0 +1,17 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="TreeView">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.Surface}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.ControlBorder}" />
+    <Setter Property="BorderThickness" Value="1" />
+  </Style>
+  <Style Selector="TreeViewItem">
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}" />
+  </Style>
+  <Style Selector="TreeViewItem:pointerover">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.ControlFaceHover}" />
+  </Style>
+  <Style Selector="TreeViewItem:selected">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.Selection}" />
+    <Setter Property="Foreground" Value="White" />
+  </Style>
+</Styles>

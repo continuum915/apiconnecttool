@@ -1,0 +1,281 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ApiConnectTool.ViewModels"
+        xmlns:models="using:ApiConnectTool.Models"
+        xmlns:components="using:ApiConnectTool.Views.Components"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        x:Class="ApiConnectTool.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="ApiConnectTool"
+        Width="1200" Height="800"
+        MinWidth="800" MinHeight="600">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto">
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!--  APP MENU BAR (4.5f)                                            -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <Menu Grid.Row="0" x:Name="MainMenu"
+              Background="{DynamicResource ApiConnectTool.Brush.Chrome}">
+            <MenuItem Header="{DynamicResource Str.Menu.File}">
+                <MenuItem x:Name="NewRequestMenuItem" Header="{DynamicResource Str.Menu.File.NewRequest}" Command="{Binding AddTabCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.File.NewCollection}" Command="{Binding CollectionsPanel.AddCollectionCommand}"/>
+                <MenuItem x:Name="ImportMenuItem" Header="{DynamicResource Str.Menu.File.ImportWizard}" Click="OnImportClick"/>
+                <MenuItem Header="{DynamicResource Str.Menu.File.ImportFrom}">
+                    <MenuItem Header="{DynamicResource Str.Menu.File.ImportApiConnectTool}" Click="OnImportApiConnectToolCollectionClick"/>
+                    <MenuItem Header="{DynamicResource Str.Menu.File.ImportPostman}" Click="OnImportPostmanCollectionClick"/>
+                    <MenuItem Header="{DynamicResource Str.Menu.File.ImportCurl}" Click="OnImportCurlClick"/>
+                    <MenuItem Header="{DynamicResource Str.Menu.File.ImportOpenApi}" Click="OnImportOpenApiClick"/>
+                </MenuItem>
+                <Separator/>
+                <MenuItem x:Name="SaveRequestMenuItem" Header="{DynamicResource Str.Menu.File.SaveRequest}" Command="{Binding SaveCommand}"/>
+                <MenuItem x:Name="SaveRequestAsMenuItem" Header="{DynamicResource Str.Menu.File.SaveRequestAs}" Command="{Binding SaveAsCommand}"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Str.Menu.File.Exit}" Click="OnExitClick"/>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Str.Menu.Edit}">
+                <MenuItem x:Name="EnvironmentsMenuItem" Header="{DynamicResource Str.Menu.Edit.Environments}" Click="OnEnvironmentsClick"/>
+                <MenuItem x:Name="GlobalEnvironmentsMenuItem" Header="{DynamicResource Str.Menu.Edit.GlobalEnvironments}" Click="OnGlobalEnvironmentsClick"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Edit.Preferences}" Click="OnPreferencesClick"/>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Str.Menu.View}">
+                <MenuItem Header="{DynamicResource Str.Menu.View.Collections}" Command="{Binding ShowCollectionsCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.View.History}" Command="{Binding ShowHistoryCommand}"/>
+                <MenuItem x:Name="HistoryWindowMenuItem" Header="{DynamicResource Str.Menu.View.HistoryWindow}" Command="{Binding Commands.OpenHistoryWindowCommand}"/>
+                <MenuItem x:Name="ConsoleMenuItem" Header="{DynamicResource Str.Menu.View.Console}" Command="{Binding Commands.OpenConsoleCommand}"/>
+                <Separator/>
+                <MenuItem x:Name="VariablesPaneMenuItem" Header="{DynamicResource Str.Menu.View.VariablesPane}" ToggleType="CheckBox"
+                          IsChecked="{Binding VariablesPane.IsVisible, Mode=OneWay}"
+                          Command="{Binding VariablesPane.ToggleCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.View.ToggleLayout}" Command="{Binding ToggleLayoutCommand}"/>
+                <MenuItem x:Name="ThemeMenuItem" Header="{DynamicResource Str.Menu.View.Theme}">
+                    <MenuItem x:Name="ThemeDarkMenuItem" Header="{DynamicResource Str.Menu.View.ThemeDark}" ToggleType="Radio"
+                              GroupName="Theme" IsChecked="{Binding Commands.IsDarkTheme, Mode=OneWay}"
+                              Command="{Binding Commands.SetThemeCommand}" CommandParameter="{x:Static models:AppTheme.Dark}"/>
+                    <MenuItem x:Name="ThemeLightMenuItem" Header="{DynamicResource Str.Menu.View.ThemeLight}" ToggleType="Radio"
+                              GroupName="Theme" IsChecked="{Binding Commands.IsLightTheme, Mode=OneWay}"
+                              Command="{Binding Commands.SetThemeCommand}" CommandParameter="{x:Static models:AppTheme.Light}"/>
+                    <MenuItem x:Name="ThemeWin7LightMenuItem" Header="{DynamicResource Str.Menu.View.ThemeWin7Light}" ToggleType="Radio"
+                              GroupName="Theme" IsChecked="{Binding Commands.IsWin7LightTheme, Mode=OneWay}"
+                              Command="{Binding Commands.SetThemeCommand}" CommandParameter="{x:Static models:AppTheme.Win7Light}"/>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem x:Name="CollectionMenu" Header="{DynamicResource Str.Menu.Collection}">
+                <MenuItem Header="{DynamicResource Str.Menu.Collection.AddRequest}" Command="{Binding Commands.AddRequestCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Collection.AddFolder}" Command="{Binding Commands.AddFolderCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Collection.Rename}" Command="{Binding Commands.RenameCollectionCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Collection.Duplicate}" Command="{Binding Commands.DuplicateCollectionCommand}"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Str.Menu.Collection.Run}" Command="{Binding Commands.RunCollectionCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Collection.RunFolder}" Command="{Binding Commands.RunFolderCommand}"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Str.Menu.Collection.Environments}" Command="{Binding Commands.CollectionEnvironmentsCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Collection.Settings}" Command="{Binding Commands.CollectionSettingsCommand}"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Str.Menu.Collection.Export}" Command="{Binding Commands.ExportCollectionCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Collection.ExportPostman}" Command="{Binding Commands.ExportCollectionAsPostmanCommand}"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Str.Menu.Collection.Delete}" Command="{Binding Commands.DeleteCollectionCommand}"/>
+            </MenuItem>
+            <MenuItem x:Name="RequestMenu" Header="{DynamicResource Str.Menu.Request}">
+                <MenuItem x:Name="SendMenuItem" Header="{DynamicResource Str.Menu.Request.Send}" Command="{Binding Commands.SendCommand}"/>
+                <MenuItem x:Name="CancelMenuItem" Header="{DynamicResource Str.Menu.Request.Cancel}" Command="{Binding Commands.CancelCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Request.Save}" Command="{Binding SaveCommand}"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Str.Menu.Request.CopyCurlRedacted}" Command="{Binding Commands.CopyAsCurlRedactedCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Request.CopyCurlRevealed}" Command="{Binding Commands.CopyAsCurlRevealedCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Request.InspectVariables}" Command="{Binding Commands.InspectVariablesCommand}"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Str.Menu.Request.MoveTo}" Command="{Binding Commands.MoveRequestToCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Request.Duplicate}" Command="{Binding Commands.DuplicateRequestCommand}"/>
+                <Separator/>
+                <MenuItem x:Name="CloseTabMenuItem" Header="{DynamicResource Str.Menu.Request.CloseTab}" Command="{Binding Commands.CloseTabCommand}"/>
+            </MenuItem>
+            <MenuItem x:Name="ToolsMenu" Header="{DynamicResource Str.Menu.Tools}">
+                <MenuItem Header="{DynamicResource Str.Menu.Tools.RunCollection}" Command="{Binding Commands.RunActiveCollectionCommand}"/>
+                <MenuItem Header="{DynamicResource Str.Menu.Tools.CompareResponses}" Command="{Binding Commands.CompareResponsesCommand}"/>
+                <MenuItem x:Name="ToolsConsoleMenuItem" Header="{DynamicResource Str.Menu.Tools.Console}" Command="{Binding Commands.OpenConsoleCommand}"/>
+            </MenuItem>
+            <MenuItem Header="{DynamicResource Str.Menu.Help}">
+                <MenuItem x:Name="ApiConnectToolHelpMenuItem" Header="{DynamicResource Str.Menu.Help.Contents}" Click="OnHelpClick"/>
+                <MenuItem x:Name="KeyboardShortcutsMenuItem" Header="{DynamicResource Str.Menu.Help.KeyboardShortcuts}"
+                          Command="{Binding Commands.OpenHelpCommand}" CommandParameter="keyboard-shortcuts"/>
+                <Separator/>
+                <MenuItem Header="{DynamicResource Str.Menu.Help.About}" Click="OnAboutClick"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!--  APP TOOLBAR (environment selector only - see AppToolbarControl) -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <components:AppToolbarControl Grid.Row="1" />
+
+        <!-- Workspace load/save problems. Each stays until dismissed (or, for the save error,
+             until a later save succeeds) so a failed write is never silent. -->
+        <StackPanel Grid.Row="2">
+            <TextBlock Text="{Binding CookiePersistenceWarning}" TextWrapping="Wrap" Margin="12,8"
+                       IsVisible="{Binding CookiePersistenceWarning, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+            <TextBlock Text="{Binding History.PersistenceWarning}" TextWrapping="Wrap" Margin="12,8"
+                       IsVisible="{Binding History.PersistenceWarning, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+            <Border IsVisible="{Binding UnsupportedWorkspaceWarning, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Background="{DynamicResource ApiConnectTool.Brush.Surface}"
+                    BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}"
+                    BorderThickness="0,0,0,1" Padding="12,8">
+                <StackPanel>
+                    <TextBlock Text="{DynamicResource Str.Workspace.UnsupportedVersionTitle}" FontWeight="SemiBold"
+                               TextWrapping="Wrap"/>
+                    <TextBlock Text="{Binding UnsupportedWorkspaceWarning}" TextWrapping="Wrap"
+                               Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+                </StackPanel>
+            </Border>
+            <Border IsVisible="{Binding WorkspaceWarning, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Background="{DynamicResource ApiConnectTool.Brush.Surface}"
+                    BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}"
+                    BorderThickness="0,0,0,1" Padding="12,8">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Classes="btn-compact" VerticalAlignment="Center"
+                            Margin="12,0,0,0"
+                            Content="{DynamicResource Str.Dialog.Dismiss}"
+                            Command="{Binding DismissWorkspaceWarningCommand}"/>
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Str.Workspace.LoadWarning}" FontWeight="SemiBold"
+                                   TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding WorkspaceWarning}" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+            <Border IsVisible="{Binding UndecryptableSecretsBanner.Warning, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Background="{DynamicResource ApiConnectTool.Brush.Surface}"
+                    BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}"
+                    BorderThickness="0,0,0,1" Padding="12,8">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Classes="btn-compact" VerticalAlignment="Center"
+                            Margin="12,0,0,0"
+                            Content="{DynamicResource Str.Dialog.Dismiss}"
+                            Command="{Binding UndecryptableSecretsBanner.DismissCommand}"/>
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Str.Workspace.UndecryptableSecretsTitle}" FontWeight="SemiBold"
+                                   TextWrapping="Wrap"/>
+                        <TextBlock Text="{DynamicResource Str.Workspace.UndecryptableSecretsDetail}" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+                        <TextBlock Text="{Binding UndecryptableSecretsBanner.Warning}" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+            <Border x:Name="UseInEveryCollectionReport"
+                    IsVisible="{Binding CollectionEnvironmentPicker.UseInEveryCollectionReport, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Background="{DynamicResource ApiConnectTool.Brush.Surface}"
+                    BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}"
+                    BorderThickness="0,0,0,1" Padding="12,8">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Classes="btn-compact" VerticalAlignment="Center"
+                            Margin="12,0,0,0"
+                            Content="{DynamicResource Str.Dialog.Dismiss}"
+                            Command="{Binding CollectionEnvironmentPicker.DismissUseInEveryCollectionReportCommand}"/>
+                    <TextBlock Text="{Binding CollectionEnvironmentPicker.UseInEveryCollectionReport}" TextWrapping="Wrap"/>
+                </DockPanel>
+            </Border>
+            <Border IsVisible="{Binding WorkspaceSaveError, Converter={x:Static ObjectConverters.IsNotNull}}"
+                    Background="{DynamicResource ApiConnectTool.Brush.Surface}"
+                    BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}"
+                    BorderThickness="0,0,0,1" Padding="12,8">
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" Classes="btn-compact" VerticalAlignment="Center"
+                            Margin="12,0,0,0"
+                            Content="{DynamicResource Str.Dialog.Dismiss}"
+                            Command="{Binding DismissWorkspaceSaveErrorCommand}"/>
+                    <StackPanel>
+                        <TextBlock Text="{DynamicResource Str.Workspace.SaveError}" FontWeight="SemiBold"
+                                   TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding WorkspaceSaveError}" TextWrapping="Wrap"
+                                   Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+                    </StackPanel>
+                </DockPanel>
+            </Border>
+        </StackPanel>
+
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <!--  MAIN BODY                                                      -->
+        <!-- ═══════════════════════════════════════════════════════════════ -->
+        <Grid x:Name="BodyGrid" Grid.Row="3" ColumnDefinitions="250,5,*,5,260">
+
+            <!-- ─────────────────────────────────────────────────────────── -->
+            <!--  LEFT SIDEBAR                                               -->
+            <!-- ─────────────────────────────────────────────────────────── -->
+            <components:SidebarControl Grid.Column="0" />
+
+
+            <!-- Sidebar / Main splitter -->
+            <GridSplitter Grid.Column="1"
+                          ResizeDirection="Columns"
+                          Background="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+
+            <!-- ─────────────────────────────────────────────────────────── -->
+            <!--  MAIN CONTENT                                               -->
+            <!-- ─────────────────────────────────────────────────────────── -->
+            <components:MainWorkspaceControl Grid.Column="2" />
+
+            <!-- Variables pane: shown or hidden by View > Variables Pane and the toolbar. -->
+            <GridSplitter x:Name="VariablesPaneSplitter" Grid.Column="3"
+                          ResizeDirection="Columns"
+                          IsVisible="{Binding VariablesPane.IsVisible}"
+                          Background="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+            <Border Grid.Column="4" IsVisible="{Binding VariablesPane.IsVisible}"
+                    BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="1,0,0,0">
+                <components:VariablesPaneControl x:Name="VariablesPane" DataContext="{Binding VariablesPane}"/>
+            </Border>
+        </Grid>
+
+        <!-- Status bar -->
+        <Border x:Name="StatusBar" Grid.Row="4" DataContext="{Binding StatusBar}"
+                Background="{DynamicResource ApiConnectTool.Brush.StatusBar}"
+                BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="0,1,0,0"
+                Padding="8,2" AutomationProperties.Name="{DynamicResource Str.Status.Name}">
+            <Border.Styles>
+                <Style Selector="TextBlock">
+                    <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+                    <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+                <Style Selector="TextBlock.danger">
+                    <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Danger}"/>
+                </Style>
+                <Style Selector="Border.status-field">
+                    <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.Border}"/>
+                    <Setter Property="BorderThickness" Value="1,0,0,0"/>
+                    <Setter Property="Padding" Value="8,0"/>
+                </Style>
+            </Border.Styles>
+            <DockPanel x:DataType="vm:StatusBarViewModel">
+                <StackPanel x:Name="StatusFields" DockPanel.Dock="Right" Orientation="Horizontal">
+                    <Border Classes="status-field">
+                        <TextBlock x:Name="StatusCollection" Text="{Binding CollectionText}"/>
+                    </Border>
+                    <Border Classes="status-field">
+                        <TextBlock x:Name="StatusEnvironment" Text="{Binding EnvironmentText}"
+                                   Classes.danger="{Binding IsProductionEnvironment}"/>
+                    </Border>
+                    <Border Classes="status-field">
+                        <TextBlock x:Name="StatusLayout" Text="{Binding LayoutText}"/>
+                    </Border>
+                    <Border Classes="status-field">
+                        <TextBlock x:Name="StatusProxy" Text="{Binding ProxyText}"/>
+                    </Border>
+                    <Border Classes="status-field">
+                        <TextBlock x:Name="StatusSaveState" Text="{Binding SaveStateText}" Classes.danger="{Binding HasSaveError}"/>
+                    </Border>
+                </StackPanel>
+                <TextBlock x:Name="StatusMessage" Text="{Binding Message}" TextTrimming="CharacterEllipsis"
+                           ToolTip.Tip="{Binding Message}"/>
+            </DockPanel>
+        </Border>
+    </Grid>
+</Window>

@@ -1,0 +1,327 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:ApiConnectTool.ViewModels"
+             xmlns:views="using:ApiConnectTool.Views"
+             xmlns:comp="using:ApiConnectTool.Views.Components"
+             xmlns:models="using:ApiConnectTool.Models"
+             xmlns:cv="using:ApiConnectTool.Converters"
+             xmlns:conv="using:Avalonia.Data.Converters"
+             mc:Ignorable="d" d:DesignWidth="260" d:DesignHeight="800"
+             x:Class="ApiConnectTool.Views.Components.SidebarControl"
+             x:DataType="vm:MainWindowViewModel"
+             views:HelpContext.TopicId="collections">
+
+    <!-- Classic navigator: Collections and History tabs, a search box, and a compact tree.
+         Row actions live in context menus (right-click, Shift+F10, the Menu key) and in the
+         Collection and Request menus; rows carry no buttons. -->
+    <UserControl.Styles>
+        <Style Selector="RadioButton.nav-tab">
+            <Setter Property="Template">
+                <ControlTemplate>
+                    <Border Name="TabBorder" Background="{TemplateBinding Background}"
+                            BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="1,1,1,0"
+                            Padding="12,4" Margin="0,0,2,0">
+                        <ContentPresenter Content="{TemplateBinding Content}"
+                                          Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter>
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.InactiveTab}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="RadioButton.nav-tab:checked">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Surface}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Text}"/>
+        </Style>
+        <Style Selector="RadioButton.nav-tab:pointerover">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Text}"/>
+        </Style>
+
+        <Style Selector="TreeView#NavigatorTree TreeViewItem">
+            <Setter Property="IsExpanded" Value="True"/>
+            <Setter Property="MinHeight" Value="22"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Text}"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+        </Style>
+        <Style Selector="TreeView#NavigatorTree TreeViewItem /template/ Border#PART_LayoutRoot">
+            <Setter Property="MinHeight" Value="22"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="TreeView#NavigatorTree TreeViewItem /template/ ToggleButton#PART_ExpandCollapseChevron">
+            <Setter Property="ToolTip.Tip" Value="{DynamicResource Str.Navigator.Expand}"/>
+            <Setter Property="AutomationProperties.Name" Value="{DynamicResource Str.Navigator.Expand}"/>
+        </Style>
+        <Style Selector="TreeView#NavigatorTree TreeViewItem:pointerover /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Hover}"/>
+        </Style>
+        <Style Selector="TreeView#NavigatorTree TreeViewItem:selected /template/ Border#PART_LayoutRoot">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Selection}"/>
+        </Style>
+        <Style Selector="TreeView#NavigatorTree TreeViewItem:selected /template/ ContentPresenter#PART_HeaderPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.SelectionText}"/>
+        </Style>
+        <Style Selector="TreeView#NavigatorTree TreeViewItem:not(:selected) /template/ ContentPresenter#PART_HeaderPresenter">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Text}"/>
+        </Style>
+
+        <Style Selector="Grid.nav-row">
+            <Setter Property="Height" Value="22"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+        <Style Selector="TextBlock.method">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Width" Value="46"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="TextBox.rename">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Input}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="2,0"/>
+            <Setter Property="MinHeight" Value="20"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="TextBlock.environment">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+            <Setter Property="MaxWidth" Value="110"/>
+        </Style>
+        <Style Selector="TextBlock.environment.production">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Danger}"/>
+        </Style>
+        <Style Selector="TextBlock.prod-tag">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Danger}"/>
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,0,4,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style Selector="Button.link">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Pane}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.AccentText}"/>
+            <Setter Property="BorderThickness" Value="0,1,0,0"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+            <Setter Property="CornerRadius" Value="0"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style Selector="ListBox.history ListBoxItem">
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="MinHeight" Value="22"/>
+        </Style>
+        <Style Selector="ListBox.history ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Selection}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.SelectionText}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,*"
+          Background="{DynamicResource ApiConnectTool.Brush.WindowBackground}">
+
+        <!-- Header tab strip -->
+        <Border Grid.Row="0" Padding="6,6,6,0"
+                BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="0,0,0,1">
+            <StackPanel x:Name="NavigatorTabs" Orientation="Horizontal">
+                <RadioButton x:Name="CollectionsTab" Classes="nav-tab" GroupName="NavigatorTabs"
+                             Content="{DynamicResource Str.Navigator.Collections}"
+                             IsChecked="{Binding !IsHistoryViewActive, Mode=OneWay}"
+                             Command="{Binding ShowCollectionsCommand}"/>
+                <RadioButton x:Name="HistoryTab" Classes="nav-tab" GroupName="NavigatorTabs"
+                             Content="{DynamicResource Str.Navigator.History}"
+                             IsChecked="{Binding IsHistoryViewActive, Mode=OneWay}"
+                             Command="{Binding ShowHistoryCommand}"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Import/export feedback (errors, success confirmations) -->
+        <TextBlock Grid.Row="1" Text="{Binding CollectionsPanel.ImportExportMessage}"
+                   IsVisible="{Binding CollectionsPanel.ImportExportMessage, Converter={x:Static conv:ObjectConverters.IsNotNull}}"
+                   TextWrapping="Wrap" FontSize="{StaticResource FontSizeCaption}"
+                   Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"
+                   Margin="8,4,8,0"/>
+
+        <!-- Search boxes -->
+        <TextBox Grid.Row="2" x:Name="CollectionsSearchBox" IsVisible="{Binding !IsHistoryViewActive}"
+                 Text="{Binding CollectionsPanel.SearchText, Mode=TwoWay}"
+                 PlaceholderText="{DynamicResource Str.Navigator.Search}"
+                 AutomationProperties.Name="{DynamicResource Str.Navigator.Search}"
+                 Margin="6" Padding="6,3"/>
+        <TextBox Grid.Row="2" x:Name="HistorySearchBox" IsVisible="{Binding IsHistoryViewActive}"
+                 Text="{Binding History.SearchText, Mode=TwoWay}"
+                 PlaceholderText="{DynamicResource Str.Navigator.SearchHistory}"
+                 AutomationProperties.Name="{DynamicResource Str.Navigator.SearchHistory}"
+                 Margin="6" Padding="6,3"/>
+
+        <Border Grid.Row="3" Background="{DynamicResource ApiConnectTool.Brush.Surface}"
+                BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="0,1,0,0">
+            <Panel>
+                <!-- History: a compact, searchable, secret-redacted send log. -->
+                <Button x:Name="OpenHistoryWindowLink" Classes="link" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
+                        IsVisible="{Binding IsHistoryViewActive}" ZIndex="1"
+                        Content="{DynamicResource Str.Navigator.OpenHistoryWindow}"
+                        Command="{Binding Commands.OpenHistoryWindowCommand}"/>
+                <ListBox x:Name="HistoryList" Margin="0,0,0,26" Classes="history" IsVisible="{Binding IsHistoryViewActive}"
+                         ItemsSource="{Binding History.Entries}"
+                         Background="Transparent"
+                         AutomationProperties.Name="{DynamicResource Str.Navigator.HistoryListName}"
+                         DoubleTapped="OnHistoryDoubleTapped">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:HistoryEntry">
+                            <Grid ColumnDefinitions="46,*,Auto,Auto" Height="22" Background="Transparent"
+                                  ToolTip.Tip="{Binding RequestSnapshot.Url}">
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="{DynamicResource Str.Navigator.HistoryResend}" Tag="{Binding}" Click="OnHistoryResendClick"/>
+                                        <MenuItem Header="{DynamicResource Str.Navigator.HistoryCompare}" Tag="{Binding}" Click="OnCompareHistoryEntriesClick"
+                                                  ToolTip.Tip="{DynamicResource Str.Navigator.HistoryCompareTip}"/>
+                                        <MenuItem Header="{DynamicResource Str.Navigator.HistoryCompareCurrent}" Tag="{Binding}" Click="OnCompareWithCurrentClick"/>
+                                    </ContextMenu>
+                                </Grid.ContextMenu>
+                                <TextBlock Grid.Column="0" Classes="method" Text="{Binding RequestSnapshot.Method}"
+                                           views:TokenBrush.Foreground="{Binding RequestSnapshot.Method.Method, Converter={x:Static cv:TokenKeys.Method}}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding RequestSnapshot.Name}" VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"/>
+                                <Panel Grid.Column="2" Margin="6,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding StatusCode}" FontWeight="SemiBold"
+                                               IsVisible="{Binding StatusCode, Converter={x:Static ObjectConverters.IsNotNull}}"
+                                               views:TokenBrush.Foreground="{Binding StatusCode, Converter={x:Static cv:TokenKeys.StatusCode}}"/>
+                                    <TextBlock Text="{DynamicResource Str.Navigator.HistoryError}" FontWeight="SemiBold"
+                                               IsVisible="{Binding StatusCode, Converter={x:Static ObjectConverters.IsNull}}"
+                                               Foreground="{DynamicResource ApiConnectTool.Brush.Danger}"/>
+                                </Panel>
+                                <TextBlock Grid.Column="3" FontSize="{StaticResource FontSizeCaption}" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"
+                                           Text="{Binding SentAtUtc, Converter={x:Static cv:DisplayConverters.LocalTime}}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Search results: a flat, collection-agnostic match list shown instead of the
+                     tree while a search is active. -->
+                <ListBox x:Name="SearchResultsList" Classes="history" IsVisible="{Binding IsSearchResultsVisible}"
+                         ItemsSource="{Binding CollectionsPanel.SearchResults}" Background="Transparent"
+                         AutomationProperties.Name="{DynamicResource Str.Navigator.Search}"
+                         >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:RequestItem">
+                            <Grid ColumnDefinitions="46,*" Height="22" Background="Transparent"
+                                  ToolTip.Tip="{Binding Name}" PointerPressed="OnSearchResultPointerPressed">
+                                <TextBlock Classes="method" Text="{Binding Method}"
+                                           views:TokenBrush.Foreground="{Binding Method.Method, Converter={x:Static cv:TokenKeys.Method}}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"
+                                           TextTrimming="CharacterEllipsis"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <!-- Collections tree -->
+                <TreeView x:Name="NavigatorTree" IsVisible="{Binding IsCollectionsTreeVisible}"
+                          ItemsSource="{Binding CollectionsPanel.Tree}"
+                          SelectedItem="{Binding CollectionsPanel.SelectedNode, Mode=TwoWay}"
+                          Background="Transparent"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                          AutomationProperties.Name="{DynamicResource Str.Navigator.TreeName}"
+                          ContextRequested="OnTreeContextRequested">
+                    <TreeView.DataTemplates>
+                        <TreeDataTemplate DataType="vm:CollectionTreeNode" ItemsSource="{Binding Children}">
+                            <Grid Classes="nav-row" ColumnDefinitions="Auto,*,Auto" ToolTip.Tip="{Binding Collection.Name}">
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Collection.AddRequest}" Tag="{Binding Collection}" Click="OnAddRequestClick"/>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Collection.AddFolder}" Tag="{Binding Collection}" Click="OnAddFolderClick"/>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Collection.Rename}" Tag="{Binding Collection}" Click="OnRenameCollectionClick"/>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Collection.Duplicate}" Tag="{Binding Collection}" Click="OnDuplicateCollectionClick"/>
+                                        <Separator/>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Collection.Run}" Tag="{Binding Collection}" Click="OnRunCollectionClick"/>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Collection.Environments}" Tag="{Binding Collection}" Click="OnCollectionEnvironmentsClick"/>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Collection.Settings}" Tag="{Binding Collection}" Click="OnCollectionSettingsClick"/>
+                                        <Separator/>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Collection.Export}" Tag="{Binding Collection}" Click="OnExportCollectionClick"/>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Collection.ExportPostman}" Tag="{Binding Collection}" Click="OnExportCollectionAsPostmanClick"/>
+                                        <Separator/>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Collection.Delete}" Tag="{Binding Collection}" Click="OnDeleteCollectionClick"/>
+                                    </ContextMenu>
+                                </Grid.ContextMenu>
+                                <comp:AppIcon Grid.Column="0" Kind="Collection" Size="15" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Collection.Name}" FontWeight="SemiBold"
+                                           IsVisible="{Binding !Collection.IsEditing}"
+                                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="5,0"/>
+                                <TextBox Grid.Column="1" Classes="rename" Text="{Binding Collection.Name, Mode=TwoWay}"
+                                         IsVisible="{Binding Collection.IsEditing}" Margin="3,0"
+                                         LostFocus="OnCollectionNameLostFocus" KeyDown="OnRenameKeyDown"/>
+                                <StackPanel Grid.Column="2" Orientation="Horizontal" Margin="0,0,6,0"
+                                            IsVisible="{Binding ActiveEnvironmentLabel, Converter={x:Static conv:ObjectConverters.IsNotNull}}"
+                                            ToolTip.Tip="{Binding ActiveEnvironmentLabel}">
+                                    <TextBlock Classes="prod-tag" Text="{DynamicResource Str.Environment.ProdTag}"
+                                               IsVisible="{Binding IsActiveEnvironmentProduction}"/>
+                                    <TextBlock Classes="environment collection-environment"
+                                               Classes.production="{Binding IsActiveEnvironmentProduction}"
+                                               Text="{Binding ActiveEnvironmentLabel}"/>
+                                </StackPanel>
+                            </Grid>
+                        </TreeDataTemplate>
+
+                        <TreeDataTemplate DataType="vm:FolderTreeNode" ItemsSource="{Binding Children}">
+                            <Grid Classes="nav-row" ColumnDefinitions="Auto,*" ToolTip.Tip="{Binding Folder.Name}">
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="{DynamicResource Str.Navigator.Rename}" Tag="{Binding Folder}" Click="OnRenameFolderClick"/>
+                                        <MenuItem Header="{DynamicResource Str.Navigator.RunFolder}" Tag="{Binding Folder}" Click="OnRunFolderClick"/>
+                                        <MenuItem Header="{DynamicResource Str.Navigator.FolderSettings}" Tag="{Binding Folder}" Click="OnFolderSettingsClick"/>
+                                        <Separator/>
+                                        <MenuItem Header="{DynamicResource Str.Navigator.Delete}" Tag="{Binding Folder}" Click="OnDeleteFolderClick"/>
+                                    </ContextMenu>
+                                </Grid.ContextMenu>
+                                <comp:AppIcon Grid.Column="0" Kind="Folder" Size="15" VerticalAlignment="Center"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Folder.Name}"
+                                           IsVisible="{Binding !Folder.IsEditing}"
+                                           TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="5,0"/>
+                                <TextBox Grid.Column="1" Classes="rename" Text="{Binding Folder.Name, Mode=TwoWay}"
+                                         IsVisible="{Binding Folder.IsEditing}" Margin="3,0"
+                                         LostFocus="OnFolderNameLostFocus" KeyDown="OnRenameKeyDown"/>
+                            </Grid>
+                        </TreeDataTemplate>
+
+                        <DataTemplate DataType="models:RequestItem">
+                            <Grid Classes="nav-row" ColumnDefinitions="Auto,*" ToolTip.Tip="{Binding Name}"
+                                  PointerPressed="OnRequestRowPointerPressed">
+                                <Grid.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="{DynamicResource Str.Navigator.Open}" Tag="{Binding}" Click="OnOpenRequestClick"/>
+                                        <MenuItem Header="{DynamicResource Str.Navigator.Rename}" Tag="{Binding}" Click="OnRenameRequestClick"/>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Request.Duplicate}" Tag="{Binding}" Click="OnDuplicateRequestClick"/>
+                                        <Separator/>
+                                        <MenuItem Header="{DynamicResource Str.Menu.Request.MoveTo}" Tag="{Binding}" Click="OnMoveRequestToClick"/>
+                                        <MenuItem Header="{DynamicResource Str.RequestActions.MoveUp}" Tag="{Binding}" Click="OnMoveRequestUpClick"/>
+                                        <MenuItem Header="{DynamicResource Str.RequestActions.MoveDown}" Tag="{Binding}" Click="OnMoveRequestDownClick"/>
+                                        <Separator/>
+                                        <MenuItem Header="{DynamicResource Str.Navigator.Delete}" Tag="{Binding}" Click="OnDeleteRequestClick"/>
+                                    </ContextMenu>
+                                </Grid.ContextMenu>
+                                <TextBlock Grid.Column="0" Classes="method" Text="{Binding Method}"
+                                           views:TokenBrush.Foreground="{Binding Method.Method, Converter={x:Static cv:TokenKeys.Method}}"/>
+                                <TextBlock Grid.Column="1" Text="{Binding Name}"
+                                           IsVisible="{Binding !IsEditing}" TextTrimming="CharacterEllipsis"
+                                           VerticalAlignment="Center" Margin="2,0,5,0"/>
+                                <TextBox Grid.Column="1" Classes="rename" Text="{Binding Name, Mode=TwoWay}"
+                                         IsVisible="{Binding IsEditing}" Margin="0,0,3,0"
+                                         LostFocus="OnRequestNameLostFocus" KeyDown="OnRenameKeyDown"/>
+                            </Grid>
+                        </DataTemplate>
+                    </TreeView.DataTemplates>
+                </TreeView>
+            </Panel>
+        </Border>
+    </Grid>
+
+</UserControl>

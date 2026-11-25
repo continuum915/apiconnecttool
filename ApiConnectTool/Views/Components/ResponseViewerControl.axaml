@@ -1,0 +1,232 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:ApiConnectTool.ViewModels"
+             xmlns:models="using:ApiConnectTool.Models"
+             xmlns:cv="using:ApiConnectTool.Converters"
+             xmlns:views="using:ApiConnectTool.Views"
+             xmlns:AvaloniaEdit="clr-namespace:AvaloniaEdit;assembly=AvaloniaEdit"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="400"
+             x:Class="ApiConnectTool.Views.Components.ResponseViewerControl"
+             x:DataType="vm:RequestTabViewModel">
+
+    <UserControl.Styles>
+        <Style Selector="Border.pane-band">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Pane}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="10,4"/>
+        </Style>
+        <Style Selector="TextBlock.empty-state">
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+        </Style>
+        <Style Selector="TextBlock.metric">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Storage warnings for this tab's last send -->
+        <StackPanel Grid.Row="0">
+            <Border Classes="pane-band" Background="{DynamicResource ApiConnectTool.Brush.WarningBackground}"
+                    IsVisible="{Binding HistoryPersistenceWarning, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <TextBlock Text="{Binding HistoryPersistenceWarning}" TextWrapping="Wrap" Foreground="{DynamicResource ApiConnectTool.Brush.WarningText}"/>
+            </Border>
+            <Border Classes="pane-band" Background="{DynamicResource ApiConnectTool.Brush.WarningBackground}"
+                    IsVisible="{Binding CookiePersistenceWarning, Converter={x:Static ObjectConverters.IsNotNull}}">
+                <TextBlock Text="{Binding CookiePersistenceWarning}" TextWrapping="Wrap" Foreground="{DynamicResource ApiConnectTool.Brush.WarningText}"/>
+            </Border>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <TabControl x:Name="ResponseTabs">
+
+                <TabItem x:Name="ResponseBodyTab" Header="{DynamicResource Str.ResponseTabs.Body}">
+                    <Grid RowDefinitions="Auto,Auto,*">
+                        <Border Grid.Row="0" Classes="pane-band">
+                            <DockPanel>
+                                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" Spacing="12" VerticalAlignment="Center">
+                                    <RadioButton Content="{DynamicResource Str.Response.Pretty}" GroupName="respView" IsChecked="{Binding IsPrettyResponse}"/>
+                                    <RadioButton Content="{DynamicResource Str.Response.Raw}" GroupName="respView" IsChecked="{Binding IsRawResponse}"/>
+                                    <Button x:Name="CopyResponseButton" Classes="btn-default" Content="{DynamicResource Str.Response.Copy}"
+                                            IsEnabled="{Binding HasTextResponse}"
+                                            Click="OnCopyResponseClick"/>
+                                </StackPanel>
+                                <TextBlock x:Name="FinalUrlText" Text="{Binding ResponseFinalUrl}" TextTrimming="CharacterEllipsis"
+                                           ToolTip.Tip="{Binding ResponseFinalUrl}"
+                                           AutomationProperties.Name="{DynamicResource Str.Response.FinalUrl}"
+                                           FontFamily="{StaticResource ApiConnectTool.FontFamily.Monospace}" FontSize="{StaticResource FontSizeCaption}"
+                                           Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"
+                                           HorizontalAlignment="Right" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                            </DockPanel>
+                        </Border>
+                        <TextBlock Grid.Row="1" Margin="12,6" TextWrapping="Wrap"
+                                   Text="{DynamicResource Str.Response.InvisibleCharacters}"
+                                   IsVisible="{Binding HasInvisibleResponseCharacters}"/>
+                        <AvaloniaEdit:TextEditor Grid.Row="2"
+                                                 x:Name="ResponseEditor"
+                                                 IsReadOnly="True"
+                                                 ShowLineNumbers="True"
+                                                 SyntaxHighlighting="Json"
+                                                 FontFamily="{StaticResource ApiConnectTool.FontFamily.Monospace}"
+                                                 FontSize="13" Padding="10"
+                                                 WordWrap="False"
+                                                 Background="{DynamicResource ApiConnectTool.Brush.Code.Background}"
+                                                 Foreground="{DynamicResource ApiConnectTool.Brush.Text}"
+                                                 LineNumbersForeground="{DynamicResource ApiConnectTool.Brush.Code.GutterText}"/>
+                    </Grid>
+                </TabItem>
+
+                <TabItem x:Name="ResponseCookiesTab" Header="{Binding Response.CookiesHeader}">
+                    <Grid RowDefinitions="Auto,*">
+                        <Border Grid.Row="0" Classes="pane-band" IsVisible="{Binding HasCookies}">
+                            <DockPanel>
+                                <Button DockPanel.Dock="Right" Classes="btn-default" Content="{DynamicResource Str.Response.ClearCookies}"
+                                        Command="{Binding ClearCookiesCommand}"/>
+                                <TextBlock Text="{Binding Response.CookiesSummary}" VerticalAlignment="Center"
+                                           Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+                            </DockPanel>
+                        </Border>
+                        <DataGrid Grid.Row="1"
+                                  ItemsSource="{Binding ResponseCookies}"
+                                  IsVisible="{Binding HasCookies}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="{DynamicResource Str.Cookies.Name}" Width="*" Binding="{ReflectionBinding Name}"/>
+                                <DataGridTextColumn Header="{DynamicResource Str.Cookies.Value}" Width="2*" Binding="{ReflectionBinding Value}"/>
+                                <DataGridTextColumn Header="{DynamicResource Str.Cookies.Domain}" Width="*" Binding="{ReflectionBinding Domain}"/>
+                                <DataGridTextColumn Header="{DynamicResource Str.Cookies.Path}" Width="Auto" Binding="{ReflectionBinding Path}"/>
+                                <DataGridCheckBoxColumn Header="{DynamicResource Str.Cookies.Secure}" Width="Auto" Binding="{ReflectionBinding Secure}"/>
+                                <DataGridCheckBoxColumn Header="{DynamicResource Str.Cookies.HttpOnly}" Width="Auto" Binding="{ReflectionBinding HttpOnly}"/>
+                                <DataGridTextColumn Header="{DynamicResource Str.Cookies.Expires}" Width="Auto" Binding="{ReflectionBinding Expires}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock Grid.Row="0" Grid.RowSpan="2" Classes="empty-state" Text="{DynamicResource Str.Response.NoCookies}"
+                                   IsVisible="{Binding !HasCookies}"/>
+                    </Grid>
+                </TabItem>
+
+                <TabItem x:Name="ResponseHeadersTab" Header="{Binding Response.HeadersHeader}">
+                    <DataGrid ItemsSource="{Binding ResponseHeaders}"
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="{DynamicResource Str.Grid.Key}" Width="*" Binding="{ReflectionBinding Key}"/>
+                            <DataGridTextColumn Header="{DynamicResource Str.Grid.Value}" Width="2*" Binding="{ReflectionBinding Value}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+
+                <TabItem x:Name="ResponseRedirectsTab" Header="{DynamicResource Str.ResponseTabs.Redirects}">
+                    <Grid>
+                        <DataGrid ItemsSource="{Binding ResponseRedirects}"
+                                  IsVisible="{Binding HasRedirects}"
+                                  AutoGenerateColumns="False"
+                                  IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="{DynamicResource Str.Redirects.Status}" Width="Auto" Binding="{ReflectionBinding StatusCode}"/>
+                                <DataGridTextColumn Header="{DynamicResource Str.Redirects.From}" Width="*" Binding="{ReflectionBinding RequestUri}"/>
+                                <DataGridTextColumn Header="{DynamicResource Str.Redirects.To}" Width="*" Binding="{ReflectionBinding Location}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock Classes="empty-state" Text="{DynamicResource Str.Response.NoRedirects}"
+                                   IsVisible="{Binding !HasRedirects}"/>
+                    </Grid>
+                </TabItem>
+
+                <TabItem x:Name="TestResultsTab" Header="{Binding Response.TestResultsHeader}">
+                    <DockPanel>
+                        <Border DockPanel.Dock="Top" Classes="pane-band">
+                            <TextBlock x:Name="TestResultsSummary" Text="{Binding AssertionTests.Summary}" FontWeight="SemiBold"
+                                       AutomationProperties.Name="{DynamicResource Str.Response.TestSummaryName}"
+                                       views:TokenBrush.Foreground="{Binding Response.TestOutcome, Converter={x:Static cv:TokenKeys.TestOutcome}}"/>
+                        </Border>
+                        <Border x:Name="TestResultsConsole" DockPanel.Dock="Bottom" MaxHeight="220"
+                                IsVisible="{Binding AssertionTests.HasConsoleLines}"
+                                BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="0,1,0,0"
+                                Background="{DynamicResource ApiConnectTool.Brush.Code.Background}"
+                                AutomationProperties.Name="{DynamicResource Str.TestResults.ConsoleName}">
+                            <DockPanel>
+                                <Border DockPanel.Dock="Top" Background="{DynamicResource ApiConnectTool.Brush.GridHeader}" Padding="10,4"
+                                        BorderBrush="{DynamicResource ApiConnectTool.Brush.BorderSubtle}" BorderThickness="0,0,0,1">
+                                    <TextBlock Text="{DynamicResource Str.TestResults.Console}" FontWeight="SemiBold"/>
+                                </Border>
+                                <ScrollViewer>
+                                    <ItemsControl ItemsSource="{Binding AssertionTests.ConsoleLines}" Margin="10,4">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="models:ScriptConsoleLine">
+                                                <Grid ColumnDefinitions="56,*">
+                                                    <TextBlock Text="{Binding LevelText}" FontWeight="Bold"
+                                                               FontFamily="{StaticResource ApiConnectTool.FontFamily.Monospace}" FontSize="12"
+                                                               views:TokenBrush.Foreground="{Binding Level, Converter={x:Static cv:TokenKeys.ConsoleLevel}}"/>
+                                                    <SelectableTextBlock Grid.Column="1" Text="{Binding Text}" TextWrapping="Wrap"
+                                                                         FontFamily="{StaticResource ApiConnectTool.FontFamily.Monospace}" FontSize="12"
+                                                                         Foreground="{DynamicResource ApiConnectTool.Brush.Text}"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </DockPanel>
+                        </Border>
+                        <DataGrid ItemsSource="{Binding AssertionTests.Results}" IsVisible="{Binding AssertionTests.HasResults}"
+                                  IsReadOnly="True" AutoGenerateColumns="False">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="{DynamicResource Str.Assertions.Status}" Width="96">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate x:DataType="models:AssertionResult">
+                                            <TextBlock Text="{Binding StatusText}" FontWeight="Bold" Margin="8,0" VerticalAlignment="Center"
+                                                       views:TokenBrush.Foreground="{Binding Converter={x:Static cv:TokenKeys.AssertionResult}}"/>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                                <DataGridTextColumn Header="{DynamicResource Str.Assertions.Description}" Width="*" Binding="{ReflectionBinding Label}"/>
+                                <DataGridTextColumn Header="{DynamicResource Str.Assertions.ActualValue}" Width="100" Binding="{ReflectionBinding ActualValue}"/>
+                                <DataGridTextColumn Header="{DynamicResource Str.Assertions.FailureMessage}" Width="*" Binding="{ReflectionBinding FailureMessage}"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </DockPanel>
+                </TabItem>
+
+            </TabControl>
+
+            <!-- Status strip, beside the tab headers -->
+            <StackPanel x:Name="ResponseStatusStrip" Orientation="Horizontal" Spacing="10"
+                        HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,5,8,0">
+                <Border x:Name="ResponseStatusChip" IsVisible="{Binding Response.HasStatus}"
+                        BorderThickness="1" CornerRadius="2" Padding="8,2" VerticalAlignment="Center"
+                        AutomationProperties.Name="{DynamicResource Str.Response.Status}"
+                        views:TokenBrush.Background="{Binding ResponseStatusClass, Converter={x:Static cv:TokenKeys.StatusChipBackground}}"
+                        views:TokenBrush.BorderBrush="{Binding ResponseStatusClass, Converter={x:Static cv:TokenKeys.StatusChipBorder}}">
+                    <TextBlock x:Name="ResponseStatusText" Text="{Binding ResponseStatus}" FontWeight="Bold"
+                               views:TokenBrush.Foreground="{Binding ResponseStatusClass, Converter={x:Static cv:TokenKeys.StatusClass}}"/>
+                </Border>
+                <TextBlock Classes="metric" Text="{Binding ResponseTime}" IsVisible="{Binding Response.HasStatus}"
+                           AutomationProperties.Name="{DynamicResource Str.Response.Time}"/>
+                <TextBlock Classes="metric" Text="{Binding ResponseSize}" IsVisible="{Binding Response.HasStatus}"
+                           AutomationProperties.Name="{DynamicResource Str.Response.Size}"/>
+                <TextBlock Text="{Binding DownloadStatusText}" Foreground="{DynamicResource ApiConnectTool.Brush.AccentText}" VerticalAlignment="Center"/>
+                <TextBlock Classes="metric" Text="{Binding ResponseActionMessage}" MaxWidth="320" TextTrimming="CharacterEllipsis"
+                           ToolTip.Tip="{Binding ResponseActionMessage}"/>
+                <Button Classes="btn-default" Content="{DynamicResource Str.Response.CancelDownload}"
+                        IsVisible="{Binding IsDownloading}"
+                        Command="{Binding CancelDownloadCommand}"/>
+                <Button x:Name="SaveResponseButton" Classes="btn-default" Content="{DynamicResource Str.Response.Save}"
+                        ToolTip.Tip="{DynamicResource Str.Response.SaveExplanation}"
+                        IsEnabled="{Binding CanSaveResponse}"
+                        Click="OnSaveResponseClick"/>
+                <Button x:Name="DownloadButton" Classes="btn-default" Content="{DynamicResource Str.Response.Download}"
+                        ToolTip.Tip="{DynamicResource Str.Response.DownloadExplanation}"
+                        IsEnabled="{Binding CanDownloadResponse}"
+                        Click="OnDownloadResponseClick"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+
+</UserControl>

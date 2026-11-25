@@ -1,0 +1,10 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="ProgressBar">
+    <Setter Property="Height" Value="18" />
+    <Setter Property="Background" Value="#FFE6EEF6" />
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.ProgressFill}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.ControlBorder}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="3" />
+  </Style>
+</Styles>

@@ -1,0 +1,18 @@
+{
+  "info": { "name": "Inherited API" },
+  "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "collection-private" }] },
+  "variable": [
+    { "key": "baseUrl", "value": "https://example.test" },
+    { "key": "disabled", "value": "hidden", "disabled": true },
+    { "key": "secret", "value": "variable-private", "type": "secret" }
+  ],
+  "event": [{ "listen": "prerequest", "script": { "exec": ["console.log('collection');"] } }],
+  "item": [
+    { "name": "Inherited", "request": { "url": { "raw": "{{baseUrl}}/inherited" } },
+      "event": [{ "listen": "test", "script": { "exec": ["pm.test('old', () => pm.expect(1).to.eql(1));"] } }] },
+    { "name": "Public", "request": { "auth": { "type": "noauth" }, "url": { "raw": "{{baseUrl}}/public" } } },
+    { "name": "Override", "auth": { "type": "basic", "basic": [{ "key": "username", "value": "user" }, { "key": "password", "value": "folder-private" }] },
+      "item": [{ "name": "Child", "request": { "url": { "raw": "{{baseUrl}}/child" } } }] },
+    { "name": "Unsupported", "request": { "auth": { "type": "digest" }, "url": { "raw": "{{baseUrl}}/unsupported" } } }
+  ]
+}

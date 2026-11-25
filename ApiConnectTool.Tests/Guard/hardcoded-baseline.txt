@@ -1,0 +1,29 @@
+# Hardcoded colors and UI labels that predate the classic desktop UI guard.
+# Format: <file> | <trimmed line text>. Remove entries when a ticket rewrites the control.
+# Regenerate with APICONNECTTOOL_UPDATE_HARDCODED_BASELINE=1 dotnet test --filter HardcodingGuardTests
+ApiConnectTool/Views/AboutWindow.axaml | <TextBlock Text="ApiConnectTool" FontWeight="Bold" FontSize="{StaticResource FontSizeHeading}"/>
+ApiConnectTool/Views/AboutWindow.axaml | <TextBlock Text="A local-first, Postman-style HTTP client." TextWrapping="Wrap" Opacity="0.7"/>
+ApiConnectTool/Views/AboutWindow.axaml | <Button Classes="accent btn-dialog" Content="Close" Click="OnCloseClick" IsDefault="True" IsCancel="True"/>
+ApiConnectTool/Views/Components/OpenRequestsTabStripControl.axaml | Content="+" Padding="14,8"
+ApiConnectTool/Views/Components/OpenRequestsTabStripControl.axaml | ToolTip.Tip="New Request"/>
+ApiConnectTool/Views/Components/OpenRequestsTabStripControl.axaml | Content="×" Padding="4,0" FontSize="14"
+ApiConnectTool/Views/Components/OpenRequestsTabStripControl.axaml | <TextBlock Text="●"
+ApiConnectTool/Views/Components/OpenRequestsTabStripControl.axaml | ToolTip.Tip="Unsaved changes"/>
+ApiConnectTool/Views/DeleteConfirmationWindow.axaml | <Button x:Name="CancelButton" Classes="btn-dialog" Content="Cancel" IsCancel="True" IsDefault="True"/>
+ApiConnectTool/Views/DeleteConfirmationWindow.axaml | <Button x:Name="DeleteButton" Classes="accent btn-dialog" Content="Delete"/>
+ApiConnectTool/Views/ResponseComparisonWindow.axaml | <TabItem Header="Headers">
+ApiConnectTool/Views/ResponseComparisonWindow.axaml | <TabItem Header="Body">
+ApiConnectTool/Views/SettingsWindow.axaml | <TextBlock Text="Appearance" FontWeight="SemiBold"/>
+ApiConnectTool/Views/SettingsWindow.axaml | <ComboBoxItem Content="Dark"/>
+ApiConnectTool/Views/SettingsWindow.axaml | <ComboBoxItem Content="Light (Avalonia)"/>
+ApiConnectTool/Views/SettingsWindow.axaml | <ComboBoxItem Content="Win7 light"/>
+ApiConnectTool/Views/SettingsWindow.axaml | <TextBlock Text="Changes apply immediately." Opacity="0.7" FontSize="{StaticResource FontSizeCaption}" Margin="0,0,0,12"/>
+ApiConnectTool/Views/SettingsWindow.axaml | <TextBlock Text="Production send warning" FontWeight="SemiBold"/>
+ApiConnectTool/Views/SettingsWindow.axaml | <TextBlock Text="Controls how often ApiConnectTool prompts for confirmation before sending against an environment marked as production."
+ApiConnectTool/Views/SettingsWindow.axaml | <ComboBoxItem Content="Always warn"/>
+ApiConnectTool/Views/SettingsWindow.axaml | <ComboBoxItem Content="Warn once per session"/>
+ApiConnectTool/Views/SettingsWindow.axaml | <ComboBoxItem Content="Never warn"/>
+ApiConnectTool/Views/SettingsWindow.axaml | <TextBlock Text="Save Request As / Duplicate naming prompt" FontWeight="SemiBold" Margin="0,16,0,0"/>
+ApiConnectTool/Views/SettingsWindow.axaml | <TextBlock Text="Controls whether ApiConnectTool asks you to name the copy when you use Save Request As or the sidebar's Duplicate action."
+ApiConnectTool/Views/SettingsWindow.axaml | <CheckBox Content="Skip this prompt (always name copies &quot;Copy of &lt;original&gt;&quot;)"
+ApiConnectTool/Views/SettingsWindow.axaml | <Button Classes="accent btn-dialog" Content="Close" Click="OnCloseClick" IsDefault="True" IsCancel="True"/>

@@ -1,0 +1,162 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ApiConnectTool.ViewModels" xmlns:views="using:ApiConnectTool.Views" xmlns:cv="using:ApiConnectTool.Converters"
+        xmlns:comp="using:ApiConnectTool.Views.Components"
+        x:Class="ApiConnectTool.Views.HistoryWindow"
+        x:DataType="vm:HistoryWindowViewModel" Title="{DynamicResource Str.HistoryWindow.Title}"
+        Width="1100" Height="680" MinWidth="760" MinHeight="460" WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource ApiConnectTool.Brush.WindowBackground}"
+        views:HelpContext.TopicId="history">
+
+    <Window.Styles>
+        <Style Selector="Border.window-toolbar">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Chrome}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.Border}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+        <Style Selector="Border.pane-header">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.GridHeader}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+        <Style Selector="ToggleButton#CompareToggle:checked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Selection}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.SelectionText}"/>
+        </Style>
+        <Style Selector="TextBlock.muted">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+        </Style>
+        <Style Selector="TextBox.detail-text">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="AcceptsReturn" Value="True"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="FontFamily" Value="{StaticResource ApiConnectTool.FontFamily.Monospace}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Code.Background}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Window.Styles>
+
+    <DockPanel>
+        <!-- Toolbar -->
+        <Border DockPanel.Dock="Top" Classes="window-toolbar">
+            <DockPanel>
+                <TextBox x:Name="HistorySearchBox" DockPanel.Dock="Right" Width="220" Text="{Binding SearchText}"
+                         PlaceholderText="{DynamicResource Str.Navigator.SearchHistory}"
+                         AutomationProperties.Name="{DynamicResource Str.Navigator.SearchHistory}"/>
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Button x:Name="ResendButton" Content="{DynamicResource Str.HistoryWindow.Resend}" Command="{Binding ResendCommand}"/>
+                    <ToggleButton x:Name="CompareToggle" Content="{DynamicResource Str.HistoryWindow.Compare}"
+                                  IsChecked="{Binding IsPickingCompare, Mode=OneWay}" Command="{Binding CompareCommand}"
+                                  ToolTip.Tip="{DynamicResource Str.Navigator.HistoryCompareTip}"/>
+                    <Button x:Name="CompareWithCurrentButton" Content="{DynamicResource Str.HistoryWindow.CompareWithCurrent}"
+                            Command="{Binding CompareWithCurrentCommand}"/>
+                    <Rectangle Width="1" Margin="4,2" Fill="{DynamicResource ApiConnectTool.Brush.Border}"/>
+                    <Button x:Name="ClearHistoryButton" Content="{DynamicResource Str.HistoryWindow.Clear}" Command="{Binding ClearHistoryCommand}"/>
+                    <TextBlock x:Name="ComparePrompt" Text="{DynamicResource Str.HistoryWindow.ComparePrompt}" VerticalAlignment="Center"
+                               Foreground="{DynamicResource ApiConnectTool.Brush.AccentText}" IsVisible="{Binding IsPickingCompare}" Margin="8,0,0,0"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Status bar -->
+        <Border DockPanel.Dock="Bottom" Background="{DynamicResource ApiConnectTool.Brush.StatusBar}"
+                BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="0,1,0,0" Padding="8,2">
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <TextBlock x:Name="HistoryEntryCount" Classes="muted" Text="{Binding EntryCountText}" FontSize="{StaticResource FontSizeCaption}"/>
+                <TextBlock x:Name="HistoryErrorCount" Classes="muted" Text="{Binding ErrorCountText}" FontSize="{StaticResource FontSizeCaption}"/>
+                <TextBlock Classes="muted" Text="{Binding LimitText}" FontSize="{StaticResource FontSizeCaption}"/>
+            </StackPanel>
+        </Border>
+
+        <Grid ColumnDefinitions="190,5,*">
+            <!-- Date groups -->
+            <ListBox x:Name="HistoryGroups" Grid.Column="0" ItemsSource="{Binding Groups}" SelectedItem="{Binding SelectedGroup}"
+                     Background="{DynamicResource ApiConnectTool.Brush.Surface}" AutomationProperties.Name="{DynamicResource Str.HistoryWindow.Groups}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:HistoryGroupItem">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Right" Text="{Binding Count}" Classes="muted"/>
+                            <TextBlock Text="{Binding Name}"/>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <GridSplitter Grid.Column="1" ResizeDirection="Columns" Background="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+
+            <Grid Grid.Column="2" RowDefinitions="*,5,200">
+                <DataGrid x:Name="HistoryGrid" Grid.Row="0" ItemsSource="{Binding Rows}" SelectedItem="{Binding SelectedRow}"
+                          AutoGenerateColumns="False" IsReadOnly="True" DoubleTapped="OnRowDoubleTapped">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="{DynamicResource Str.HistoryWindow.Time}" Binding="{ReflectionBinding TimeText}"/>
+                        <DataGridTemplateColumn Header="{DynamicResource Str.Runner.Method}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="vm:HistoryRow">
+                                    <TextBlock Text="{Binding Method}" FontWeight="Bold" FontSize="11" Margin="6,0" VerticalAlignment="Center"
+                                               views:TokenBrush.Foreground="{Binding Method, Converter={x:Static cv:TokenKeys.Method}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="{DynamicResource Str.HistoryWindow.Url}" Width="3*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="vm:HistoryRow">
+                                    <comp:TemplateText Template="{Binding Url}" Margin="6,0" VerticalAlignment="Center"
+                                                       TextTrimming="CharacterEllipsis" FontFamily="{StaticResource ApiConnectTool.FontFamily.Monospace}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="{DynamicResource Str.Runner.Status}">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="vm:HistoryRow">
+                                    <TextBlock Text="{Binding StatusText}" FontWeight="SemiBold" Margin="6,0" VerticalAlignment="Center"
+                                               views:TokenBrush.Foreground="{Binding StatusCode, Converter={x:Static cv:TokenKeys.StatusCode}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="{DynamicResource Str.HistoryWindow.Duration}" Binding="{ReflectionBinding DurationText}"/>
+                        <DataGridTextColumn Header="{DynamicResource Str.Response.Size}" Binding="{ReflectionBinding SizeText}"/>
+                        <DataGridTemplateColumn Header="{DynamicResource Str.VariablesPane.CollectionLabel}" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="vm:HistoryRow">
+                                    <TextBlock Text="{Binding CollectionName}" Margin="6,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"
+                                               Classes.muted="{Binding IsUnsaved}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <GridSplitter Grid.Row="1" ResizeDirection="Rows" Background="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+
+                <Grid Grid.Row="2" ColumnDefinitions="*,5,*" IsVisible="{Binding HasSelection}">
+                    <Border Grid.Column="0" BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="1" Background="{DynamicResource ApiConnectTool.Brush.Surface}">
+                        <DockPanel>
+                            <Border DockPanel.Dock="Top" Classes="pane-header">
+                                <TextBlock Text="{DynamicResource Str.Runner.Details.Request}" FontWeight="SemiBold"/>
+                            </Border>
+                            <TextBlock DockPanel.Dock="Bottom" Text="{DynamicResource Str.HistoryWindow.RequestNote}" Classes="muted" TextWrapping="Wrap"
+                                       FontSize="{StaticResource FontSizeCaption}" Margin="8,4"/>
+                            <TextBox x:Name="HistoryRequestDetails" Classes="detail-text" Text="{Binding RequestSummary}"/>
+                        </DockPanel>
+                    </Border>
+                    <GridSplitter Grid.Column="1" ResizeDirection="Columns" Background="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+                    <Border Grid.Column="2" BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="1" Background="{DynamicResource ApiConnectTool.Brush.Surface}">
+                        <DockPanel>
+                            <Border DockPanel.Dock="Top" Classes="pane-header">
+                                <TextBlock Text="{DynamicResource Str.Runner.Details.Response}" FontWeight="SemiBold"/>
+                            </Border>
+                            <TextBlock DockPanel.Dock="Bottom" Text="{DynamicResource Str.HistoryWindow.ResponseNote}" Classes="muted" TextWrapping="Wrap"
+                                       FontSize="{StaticResource FontSizeCaption}" Margin="8,4"/>
+                            <TextBlock x:Name="HistoryResponseDetails" DockPanel.Dock="Top" Text="{Binding ResponseSummary}" TextWrapping="Wrap" Margin="8,4"/>
+                            <TextBox Classes="detail-text" Text="{Binding ResponsePreview}"/>
+                        </DockPanel>
+                    </Border>
+                </Grid>
+                <TextBlock Grid.Row="2" Text="{DynamicResource Str.Runner.Details.None}" Classes="muted"
+                           HorizontalAlignment="Center" VerticalAlignment="Center" IsVisible="{Binding !HasSelection}"/>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>

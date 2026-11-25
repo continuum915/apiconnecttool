@@ -1,0 +1,26 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="Button">
+    <Setter Property="MinHeight" Value="{DynamicResource Win7.Size.ControlMinHeight}" />
+    <Setter Property="Padding" Value="{DynamicResource Win7.Thickness.ControlPadding}" />
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.ControlFace}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.ControlBorder}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{DynamicResource Win7.CornerRadius.Control}" />
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}" />
+  </Style>
+  <Style Selector="Button:pointerover">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.ControlFaceHover}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.FocusGlow}" />
+  </Style>
+  <Style Selector="Button:pressed">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.ControlFacePressed}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.ControlBorderDark}" />
+  </Style>
+  <Style Selector="Button:focus-visible">
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.FocusGlow}" />
+  </Style>
+  <Style Selector="Button:disabled">
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.DisabledText}" />
+    <Setter Property="Opacity" Value="0.72" />
+  </Style>
+</Styles>

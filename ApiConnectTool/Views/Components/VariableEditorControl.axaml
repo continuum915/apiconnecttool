@@ -1,0 +1,120 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:ApiConnectTool.ViewModels" xmlns:models="using:ApiConnectTool.Models"
+             x:Class="ApiConnectTool.Views.Components.VariableEditorControl" x:DataType="vm:VariableEditorViewModel">
+    <UserControl.Styles>
+        <!-- An override in use is highlighted; the default it replaces is muted. -->
+        <Style Selector="Border.override-cell.in-use">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.OverrideBackground}"/>
+        </Style>
+        <Style Selector="TextBox.default-value.overridden">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+        </Style>
+        <Style Selector="TextBox.cell">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+    </UserControl.Styles>
+    <Grid RowDefinitions="Auto,Auto,*">
+        <DockPanel Grid.Row="0" Margin="0,0,0,6">
+            <TextBox x:Name="VariableSearchTextBox" DockPanel.Dock="Right" Width="180" Text="{Binding SearchText}"
+                     PlaceholderText="{DynamicResource Str.VariableSearch.Placeholder}"
+                     ToolTip.Tip="{DynamicResource Str.VariableSearch.Placeholder}"/>
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button x:Name="AddVariableButton" Classes="btn-default" Content="{DynamicResource Str.Variables.Add}" Click="OnAddVariableClick"/>
+                <Button x:Name="ResetAllOverridesButton" Classes="btn-default" Content="{DynamicResource Str.Variables.ResetAll}"
+                        IsEnabled="{Binding HasOverrides}" Click="OnResetAllClick"/>
+                <CheckBox Content="{DynamicResource Str.Variables.ShowSecrets}" IsChecked="{Binding IsSecretVisible}" VerticalAlignment="Center"/>
+            </StackPanel>
+        </DockPanel>
+        <TextBlock Grid.Row="1" Text="{DynamicResource Str.Variables.OverrideHelp}" TextWrapping="Wrap" Margin="0,0,0,6"
+                   FontSize="{StaticResource FontSizeCaption}" Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+        <DataGrid Grid.Row="2" x:Name="VariableGrid" ItemsSource="{Binding DisplayVariables}" AutoGenerateColumns="False"
+                  CanUserResizeColumns="True" MinColumnWidth="80">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Header="{DynamicResource Str.Variables.Enabled}" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="models:EnvironmentVariable">
+                            <CheckBox IsChecked="{Binding IsEnabled}" HorizontalAlignment="Center"
+                                      AutomationProperties.Name="{DynamicResource Str.Variables.Enabled}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="{DynamicResource Str.Variables.Key}" Width="*" MinWidth="120">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="models:EnvironmentVariable">
+                            <TextBox x:Name="VariableKeyTextBox" Classes="cell" Text="{Binding Key}"
+                                     Foreground="{DynamicResource ApiConnectTool.Brush.Variable}"
+                                     AutomationProperties.Name="{DynamicResource Str.Variables.Key}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="{DynamicResource Str.Variables.Initial}" Width="*" MinWidth="140">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="models:EnvironmentVariable">
+                            <TextBox x:Name="DefaultValueTextBox" Classes="cell default-value" Classes.overridden="{Binding UseOverride}"
+                                     Text="{Binding InitialValueText}" AutomationProperties.Name="{DynamicResource Str.Variables.Initial}">
+                                <TextBox.PasswordChar>
+                                    <MultiBinding Converter="{StaticResource SecretPasswordCharConverter}">
+                                        <Binding Path="IsSecret"/>
+                                        <Binding Path="$parent[DataGrid].((vm:VariableEditorViewModel)DataContext).IsSecretVisible"/>
+                                    </MultiBinding>
+                                </TextBox.PasswordChar>
+                            </TextBox>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="{DynamicResource Str.Variables.Current}" Width="*" MinWidth="140">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="models:EnvironmentVariable">
+                            <Border x:Name="OverrideCell" Classes="override-cell" Classes.in-use="{Binding UseOverride}">
+                                <TextBox Classes="cell" Text="{Binding CurrentValueText}" AutomationProperties.Name="{DynamicResource Str.Variables.Current}">
+                                    <TextBox.PasswordChar>
+                                        <MultiBinding Converter="{StaticResource SecretPasswordCharConverter}">
+                                            <Binding Path="IsSecret"/>
+                                            <Binding Path="$parent[DataGrid].((vm:VariableEditorViewModel)DataContext).IsSecretVisible"/>
+                                        </MultiBinding>
+                                    </TextBox.PasswordChar>
+                                </TextBox>
+                            </Border>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="{DynamicResource Str.Variables.UseOverride}" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="models:EnvironmentVariable">
+                            <CheckBox IsChecked="{Binding UseOverride}" HorizontalAlignment="Center"
+                                      AutomationProperties.Name="{DynamicResource Str.Variables.UseOverride}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="{DynamicResource Str.Variables.ResetColumn}" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="models:EnvironmentVariable">
+                            <Button Classes="btn-compact" Content="{DynamicResource Str.Variables.ResetOverride}" IsEnabled="{Binding UseOverride}"
+                                    Command="{Binding $parent[DataGrid].((vm:VariableEditorViewModel)DataContext).ResetOverrideCommand}" CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="{DynamicResource Str.Variables.Secret}" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="models:EnvironmentVariable">
+                            <CheckBox IsChecked="{Binding IsSecret}" HorizontalAlignment="Center"
+                                      AutomationProperties.Name="{DynamicResource Str.Variables.Secret}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="{DynamicResource Str.Variables.Remove}" Width="Auto">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate x:DataType="models:EnvironmentVariable">
+                            <Button Classes="btn-compact" Content="{DynamicResource Str.Variables.Remove}"
+                                    Command="{Binding $parent[DataGrid].((vm:VariableEditorViewModel)DataContext).RemoveVariableCommand}" CommandParameter="{Binding}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <TextBlock Grid.Row="2" x:Name="EmptyVariablesText" Text="{DynamicResource Str.VariableSearch.Empty}" IsVisible="{Binding IsScopeEmpty}" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
+        <TextBlock Grid.Row="2" x:Name="NoMatchingVariablesText" Text="{DynamicResource Str.VariableSearch.NoMatches}" IsVisible="{Binding HasNoMatches}" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
+    </Grid>
+</UserControl>

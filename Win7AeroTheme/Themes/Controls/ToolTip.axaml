@@ -1,0 +1,9 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="ToolTip">
+    <Setter Property="Background" Value="#FFFFFFE1" />
+    <Setter Property="BorderBrush" Value="#FF767676" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}" />
+    <Setter Property="Padding" Value="6,3" />
+  </Style>
+</Styles>

@@ -1,0 +1,10 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <CornerRadius x:Key="Win7.CornerRadius.Control">3</CornerRadius>
+  <CornerRadius x:Key="Win7.CornerRadius.Panel">4</CornerRadius>
+  <Thickness x:Key="Win7.Thickness.ControlPadding">10,4</Thickness>
+  <Thickness x:Key="Win7.Thickness.CompactPadding">7,3</Thickness>
+  <Thickness x:Key="Win7.Thickness.InputPadding">6,3</Thickness>
+  <Thickness x:Key="Win7.Thickness.FocusBorder">1</Thickness>
+  <x:Double x:Key="Win7.Size.ControlMinHeight">24</x:Double>
+</ResourceDictionary>

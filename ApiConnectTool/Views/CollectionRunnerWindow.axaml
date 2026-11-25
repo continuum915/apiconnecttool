@@ -1,0 +1,289 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ApiConnectTool.ViewModels" xmlns:views="using:ApiConnectTool.Views" xmlns:cv="using:ApiConnectTool.Converters"
+        xmlns:models="using:ApiConnectTool.Models" xmlns:comp="using:ApiConnectTool.Views.Components"
+        x:Class="ApiConnectTool.Views.CollectionRunnerWindow"
+        x:DataType="vm:CollectionRunnerViewModel" Title="{Binding Title}"
+        Width="1100" Height="720" MinWidth="760" MinHeight="480" WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource ApiConnectTool.Brush.WindowBackground}"
+        views:HelpContext.TopicId="collection-runner">
+
+    <Window.Styles>
+        <Style Selector="Border.window-toolbar">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Chrome}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.Border}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+        <Style Selector="Border.pane-header">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.GridHeader}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+        <Style Selector="TextBlock.field-label">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+            <Setter Property="Margin" Value="0,8,0,2"/>
+        </Style>
+        <Style Selector="Border.counter">
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.Border}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Surface}"/>
+            <Setter Property="Padding" Value="10,4"/>
+            <Setter Property="MinWidth" Value="84"/>
+        </Style>
+        <Style Selector="Border.counter TextBlock.counter-label">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}"/>
+        </Style>
+        <Style Selector="Border.counter TextBlock.counter-value">
+            <Setter Property="FontSize" Value="{StaticResource FontSizeHeading}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style Selector="DataGridRow.problem:not(:selected)">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.DangerBackground}"/>
+        </Style>
+        <Style Selector="TextBox.detail-text">
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="AcceptsReturn" Value="True"/>
+            <Setter Property="TextWrapping" Value="NoWrap"/>
+            <Setter Property="FontFamily" Value="{StaticResource ApiConnectTool.FontFamily.Monospace}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Code.Background}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+        </Style>
+    </Window.Styles>
+
+    <DockPanel>
+        <!-- Toolbar -->
+        <Border DockPanel.Dock="Top" Classes="window-toolbar">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button x:Name="ToolbarStartButton" Classes="accent" Content="{Binding StartText}" Command="{Binding StartCommand}"/>
+                <Button x:Name="CancelRunButton" Content="{DynamicResource Str.Dialog.Cancel}" Command="{Binding CancelCommand}" IsEnabled="{Binding IsRunning}"/>
+                <TextBlock Text="{DynamicResource Str.Runner.EnvironmentNote}" VerticalAlignment="Center" Margin="8,0,0,0"
+                           Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+            </StackPanel>
+        </Border>
+
+        <Grid ColumnDefinitions="260,5,*">
+            <!-- Requests to run and settings -->
+            <DockPanel Grid.Column="0" Background="{DynamicResource ApiConnectTool.Brush.Surface}">
+                <StackPanel DockPanel.Dock="Bottom" Margin="8" IsEnabled="{Binding !IsRunning}">
+                    <TextBlock Text="{DynamicResource Str.Runner.Settings}" FontWeight="SemiBold"/>
+                    <TextBlock Classes="field-label" Text="{DynamicResource Str.Runner.CollectionEnvironment}"/>
+                    <ComboBox x:Name="CollectionEnvironmentPicker" ItemsSource="{Binding CollectionEnvironments}" SelectedItem="{Binding SelectedCollectionEnvironment}"
+                              HorizontalAlignment="Stretch" AutomationProperties.Name="{DynamicResource Str.Runner.CollectionEnvironment}">
+                        <ComboBox.ItemTemplate><DataTemplate x:DataType="vm:EnvironmentChoice">
+                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                <TextBlock Text="{Binding Name}"/>
+                                <TextBlock Text="{DynamicResource Str.Environment.ProdTag}" FontWeight="Bold"
+                                           Foreground="{DynamicResource ApiConnectTool.Brush.Danger}" IsVisible="{Binding IsProduction}"/>
+                            </StackPanel>
+                        </DataTemplate></ComboBox.ItemTemplate>
+                    </ComboBox>
+                    <StackPanel IsVisible="{Binding HasGlobalEnvironments}">
+                        <TextBlock Classes="field-label" Text="{DynamicResource Str.Runner.Environment}"/>
+                        <ComboBox x:Name="GlobalEnvironmentPicker" ItemsSource="{Binding Environments}" SelectedItem="{Binding SelectedEnvironment}"
+                                  HorizontalAlignment="Stretch" AutomationProperties.Name="{DynamicResource Str.Runner.Environment}">
+                            <ComboBox.ItemTemplate><DataTemplate x:DataType="models:RequestEnvironment"><TextBlock Text="{Binding Name}"/></DataTemplate></ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+                    <TextBlock Classes="field-label" Text="{DynamicResource Str.Runner.DataFile}"/>
+                    <TextBlock Text="{Binding IterationDataFileName}" TextTrimming="CharacterEllipsis"
+                               IsVisible="{Binding IterationDataFileName, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                    <TextBlock Text="{DynamicResource Str.Runner.NoDataFile}" Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"
+                               IsVisible="{Binding IterationDataFileName, Converter={x:Static ObjectConverters.IsNull}}"/>
+                    <StackPanel Orientation="Horizontal" Spacing="6" Margin="0,4,0,0">
+                        <Button Classes="btn-compact" Content="{DynamicResource Str.Runner.ChooseData}" Click="OnChooseDataClick"/>
+                        <Button Classes="btn-compact" Content="{DynamicResource Str.Runner.ClearData}" Command="{Binding ClearIterationDataCommand}"/>
+                    </StackPanel>
+                    <TextBlock Classes="field-label" Text="{DynamicResource Str.Runner.Delay}"/>
+                    <TextBox x:Name="DelayTextBox" Text="{Binding DelayMilliseconds}" Width="100" HorizontalAlignment="Left"
+                             AutomationProperties.Name="{DynamicResource Str.Runner.Delay}"/>
+                    <CheckBox Content="{DynamicResource Str.Runner.StopOnFailure}" IsChecked="{Binding StopOnFailure}" Margin="0,8,0,0"/>
+                    <Button x:Name="StartRunButton" Classes="accent" Content="{Binding StartText}" Command="{Binding StartCommand}"
+                            HorizontalAlignment="Stretch" HorizontalContentAlignment="Center" Margin="0,10,0,0"/>
+                </StackPanel>
+                <Border DockPanel.Dock="Top" Classes="pane-header">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="4">
+                            <Button x:Name="SelectAllRequestsButton" Classes="btn-compact" Content="{DynamicResource Str.Runner.SelectAll}"
+                                    Command="{Binding SelectAllCommand}" IsEnabled="{Binding !IsRunning}"/>
+                            <Button x:Name="SelectNoRequestsButton" Classes="btn-compact" Content="{DynamicResource Str.Runner.SelectNone}"
+                                    Command="{Binding SelectNoneCommand}" IsEnabled="{Binding !IsRunning}"/>
+                        </StackPanel>
+                        <TextBlock Text="{DynamicResource Str.Runner.RequestsToRun}" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    </DockPanel>
+                </Border>
+                <ListBox x:Name="RunRequestList" ItemsSource="{Binding RunRequests}" IsEnabled="{Binding !IsRunning}" Background="Transparent"
+                         AutomationProperties.Name="{DynamicResource Str.Runner.RequestsToRun}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate x:DataType="vm:RunRequestChoice">
+                            <CheckBox IsChecked="{Binding IsIncluded}" AutomationProperties.Name="{Binding Name}">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <TextBlock Text="{Binding Method}" FontSize="10" FontWeight="Bold" Width="44" VerticalAlignment="Center"
+                                               views:TokenBrush.Foreground="{Binding Method, Converter={x:Static cv:TokenKeys.Method}}"/>
+                                    <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis" MaxWidth="110" VerticalAlignment="Center"/>
+                                    <TextBlock Text="{Binding FolderName}" Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}" FontSize="{StaticResource FontSizeCaption}"
+                                               TextTrimming="CharacterEllipsis" MaxWidth="70" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </DockPanel>
+
+            <GridSplitter Grid.Column="1" ResizeDirection="Columns" Background="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+
+            <!-- Summary, results and details -->
+            <Grid Grid.Column="2" RowDefinitions="Auto,*,5,220" Margin="8">
+                <StackPanel Grid.Row="0" Spacing="6" Margin="0,0,0,8">
+                    <TextBlock x:Name="RunSummaryText" Text="{Binding Summary}"/>
+                    <TextBlock Text="{Binding CurrentRequest}" Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+                    <TextBlock Text="{Binding ErrorMessage}" Foreground="{DynamicResource ApiConnectTool.Brush.Danger}"
+                               IsVisible="{Binding ErrorMessage, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+                    <Border Height="10" BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="1"
+                            Background="{DynamicResource ApiConnectTool.Brush.Pane}" AutomationProperties.Name="{DynamicResource Str.Runner.Progress}">
+                        <Grid x:Name="SegmentedProgress">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding PassedWeight, Converter={x:Static cv:DisplayConverters.Star}}"/>
+                                <ColumnDefinition Width="{Binding FailedWeight, Converter={x:Static cv:DisplayConverters.Star}}"/>
+                                <ColumnDefinition Width="{Binding ErroredWeight, Converter={x:Static cv:DisplayConverters.Star}}"/>
+                                <ColumnDefinition Width="{Binding RemainingWeight, Converter={x:Static cv:DisplayConverters.Star}}"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" x:Name="PassedSegment" Background="{DynamicResource ApiConnectTool.Brush.SuccessFill}"/>
+                            <Border Grid.Column="1" x:Name="FailedSegment" Background="{DynamicResource ApiConnectTool.Brush.DangerFill}"/>
+                            <Border Grid.Column="2" x:Name="ErroredSegment" Background="{DynamicResource ApiConnectTool.Brush.Warning}"/>
+                        </Grid>
+                    </Border>
+                    <StackPanel x:Name="RunCounters" Orientation="Horizontal" Spacing="6">
+                        <Border Classes="counter"><StackPanel>
+                            <TextBlock Classes="counter-label" Text="{DynamicResource Str.Runner.Counter.Run}"/>
+                            <TextBlock Classes="counter-value" x:Name="RunCountText" Text="{Binding RunCount}"/>
+                        </StackPanel></Border>
+                        <Border Classes="counter"><StackPanel>
+                            <TextBlock Classes="counter-label" Text="{DynamicResource Str.Runner.Counter.Passed}"/>
+                            <TextBlock Classes="counter-value" x:Name="PassedCountText" Text="{Binding PassedCount}" Foreground="{DynamicResource ApiConnectTool.Brush.Success}"/>
+                        </StackPanel></Border>
+                        <Border Classes="counter"><StackPanel>
+                            <TextBlock Classes="counter-label" Text="{DynamicResource Str.Runner.Counter.Failed}"/>
+                            <TextBlock Classes="counter-value" x:Name="FailedCountText" Text="{Binding FailedCount}" Foreground="{DynamicResource ApiConnectTool.Brush.Danger}"/>
+                        </StackPanel></Border>
+                        <Border Classes="counter"><StackPanel>
+                            <TextBlock Classes="counter-label" Text="{DynamicResource Str.Runner.Counter.Errored}"/>
+                            <TextBlock Classes="counter-value" x:Name="ErroredCountText" Text="{Binding ErroredCount}" Foreground="{DynamicResource ApiConnectTool.Brush.WarningText}"/>
+                        </StackPanel></Border>
+                        <Border Classes="counter"><StackPanel>
+                            <TextBlock Classes="counter-label" Text="{DynamicResource Str.Runner.Counter.TotalTime}"/>
+                            <TextBlock Classes="counter-value" x:Name="TotalTimeText" Text="{Binding TotalTimeText}"/>
+                        </StackPanel></Border>
+                    </StackPanel>
+                </StackPanel>
+
+                <DataGrid Grid.Row="1" x:Name="RunResultsGrid" ItemsSource="{Binding Rows}" SelectedItem="{Binding SelectedEntry}"
+                          AutoGenerateColumns="False" IsReadOnly="True" LoadingRow="OnResultRowLoading">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="{DynamicResource Str.Runner.OutcomeIcon}" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="models:CollectionRunEntry">
+                                    <comp:AppIcon Size="14" HorizontalAlignment="Center"
+                                                   Kind="{Binding Outcome, Converter={x:Static cv:DisplayConverters.RunOutcomeIcon}}"
+                                                   BrushKey="{Binding Outcome, Converter={x:Static cv:TokenKeys.RunOutcome}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="{DynamicResource Str.Runner.Method}" Width="Auto">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate x:DataType="models:CollectionRunEntry">
+                                    <TextBlock Text="{Binding Method}" FontWeight="Bold" FontSize="11" Margin="6,0" VerticalAlignment="Center"
+                                               views:TokenBrush.Foreground="{Binding Method, Converter={x:Static cv:TokenKeys.Method}}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="{DynamicResource Str.Runner.Request}" Binding="{ReflectionBinding RequestName}" Width="2*"/>
+                        <DataGridTextColumn Header="{DynamicResource Str.Runner.Iteration}" Binding="{ReflectionBinding IterationIndex}"/>
+                        <DataGridTextColumn Header="{DynamicResource Str.Runner.Status}" Binding="{ReflectionBinding StatusCode}"/>
+                        <DataGridTextColumn Header="{DynamicResource Str.Runner.Elapsed}" Binding="{ReflectionBinding ElapsedText}"/>
+                        <DataGridTextColumn Header="{DynamicResource Str.Runner.Outcome}" Binding="{ReflectionBinding OutcomeText}"/>
+                        <DataGridTextColumn Header="{DynamicResource Str.Runner.Tests}" Binding="{ReflectionBinding TestsSummary}"/>
+                        <DataGridTextColumn Header="{DynamicResource Str.Runner.Error}" Binding="{ReflectionBinding ErrorMessage}" Width="2*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <GridSplitter Grid.Row="2" ResizeDirection="Rows" Background="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+
+                <!-- Details of the selected result -->
+                <Border Grid.Row="3" BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="1"
+                        Background="{DynamicResource ApiConnectTool.Brush.Surface}">
+                    <Panel>
+                        <TextBlock Text="{DynamicResource Str.Runner.Details.None}" Foreground="{DynamicResource ApiConnectTool.Brush.TextMuted}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   IsVisible="{Binding SelectedEntry, Converter={x:Static ObjectConverters.IsNull}}"/>
+                        <TabControl x:Name="RunDetailsTabs" IsVisible="{Binding SelectedEntry, Converter={x:Static ObjectConverters.IsNotNull}}">
+                            <TabItem x:Name="RunDetailsTestsTab" Header="{DynamicResource Str.Runner.Details.TestResults}">
+                                <Panel>
+                                    <DataGrid x:Name="RunDetailsTestsGrid" ItemsSource="{Binding SelectedEntry.Tests}" IsReadOnly="True" AutoGenerateColumns="False">
+                                        <DataGrid.Columns>
+                                            <DataGridTemplateColumn Header="{DynamicResource Str.Assertions.Status}" Width="Auto">
+                                                <DataGridTemplateColumn.CellTemplate>
+                                                    <DataTemplate x:DataType="models:AssertionResult">
+                                                        <TextBlock Text="{Binding StatusText}" FontWeight="Bold" Margin="6,0" VerticalAlignment="Center"
+                                                                   views:TokenBrush.Foreground="{Binding Converter={x:Static cv:TokenKeys.AssertionResult}}"/>
+                                                    </DataTemplate>
+                                                </DataGridTemplateColumn.CellTemplate>
+                                            </DataGridTemplateColumn>
+                                            <DataGridTextColumn Header="{DynamicResource Str.Assertions.Description}" Width="*" Binding="{ReflectionBinding Label}"/>
+                                            <DataGridTextColumn Header="{DynamicResource Str.Assertions.ActualValue}" Width="Auto" Binding="{ReflectionBinding ActualValue}"/>
+                                            <DataGridTextColumn Header="{DynamicResource Str.Assertions.FailureMessage}" Width="*" Binding="{ReflectionBinding FailureMessage}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Panel>
+                            </TabItem>
+                            <TabItem x:Name="RunDetailsConsoleTab" Header="{DynamicResource Str.Runner.Details.Console}">
+                                <ScrollViewer Background="{DynamicResource ApiConnectTool.Brush.Code.Background}">
+                                    <ItemsControl x:Name="RunDetailsConsole" ItemsSource="{Binding SelectedEntry.Details.Console}" Margin="8,4">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="models:ScriptConsoleLine">
+                                                <Grid ColumnDefinitions="56,*">
+                                                    <TextBlock Text="{Binding LevelText}" FontWeight="Bold" FontFamily="{StaticResource ApiConnectTool.FontFamily.Monospace}" FontSize="12"
+                                                               views:TokenBrush.Foreground="{Binding Level, Converter={x:Static cv:TokenKeys.ConsoleLevel}}"/>
+                                                    <SelectableTextBlock Grid.Column="1" Text="{Binding Text}" TextWrapping="Wrap"
+                                                                         FontFamily="{StaticResource ApiConnectTool.FontFamily.Monospace}" FontSize="12"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </TabItem>
+                            <TabItem x:Name="RunDetailsRequestTab" Header="{DynamicResource Str.Runner.Details.Request}">
+                                <DockPanel>
+                                    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Spacing="8" Margin="8,4">
+                                        <TextBlock Text="{Binding SelectedEntry.Details.Method}" FontWeight="Bold"
+                                                   views:TokenBrush.Foreground="{Binding SelectedEntry.Details.Method, Converter={x:Static cv:TokenKeys.Method}}"/>
+                                        <SelectableTextBlock x:Name="RunDetailsRequestUrl" Text="{Binding SelectedEntry.Details.RequestUrl}"
+                                                             FontFamily="{StaticResource ApiConnectTool.FontFamily.Monospace}"/>
+                                    </StackPanel>
+                                    <TextBox x:Name="RunDetailsRequestHeaders" Classes="detail-text" Text="{Binding SelectedEntry.Details.RequestHeaders}"
+                                             AutomationProperties.Name="{DynamicResource Str.Runner.Details.Headers}"/>
+                                </DockPanel>
+                            </TabItem>
+                            <TabItem x:Name="RunDetailsResponseTab" Header="{DynamicResource Str.Runner.Details.Response}">
+                                <Grid RowDefinitions="Auto,*,Auto,*">
+                                    <TextBlock Grid.Row="0" Text="{DynamicResource Str.Runner.Details.Headers}" FontWeight="SemiBold" Margin="8,4"/>
+                                    <TextBox Grid.Row="1" x:Name="RunDetailsResponseHeaders" Classes="detail-text" Text="{Binding SelectedEntry.Details.ResponseHeaders}"
+                                             AutomationProperties.Name="{DynamicResource Str.Runner.Details.Headers}"/>
+                                    <StackPanel Grid.Row="2" Orientation="Horizontal" Spacing="8" Margin="8,4">
+                                        <TextBlock Text="{DynamicResource Str.Runner.Details.Body}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{DynamicResource Str.Runner.Details.BodyTruncated}" Foreground="{DynamicResource ApiConnectTool.Brush.WarningText}"
+                                                   IsVisible="{Binding SelectedEntry.Details.ResponseBodyTruncated}"/>
+                                    </StackPanel>
+                                    <TextBox Grid.Row="3" x:Name="RunDetailsResponseBody" Classes="detail-text" Text="{Binding SelectedEntry.Details.ResponseBody}"
+                                             AutomationProperties.Name="{DynamicResource Str.Runner.Details.Body}"/>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
+                    </Panel>
+                </Border>
+            </Grid>
+        </Grid>
+    </DockPanel>
+</Window>

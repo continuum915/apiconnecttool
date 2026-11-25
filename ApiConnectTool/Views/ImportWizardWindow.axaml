@@ -1,0 +1,208 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ApiConnectTool.ViewModels" xmlns:views="using:ApiConnectTool.Views" xmlns:cv="using:ApiConnectTool.Converters"
+        xmlns:conv="using:Avalonia.Data.Converters" xmlns:models="using:ApiConnectTool.Models"
+        x:Class="ApiConnectTool.Views.ImportWizardWindow"
+        x:DataType="vm:ImportWizardViewModel" Title="{DynamicResource Str.ImportWizard.Title}"
+        Width="820" Height="560" MinWidth="680" MinHeight="460" WindowStartupLocation="CenterOwner"
+        Background="{DynamicResource ApiConnectTool.Brush.WindowBackground}"
+        views:HelpContext.TopicId="import-and-export">
+
+    <Window.Styles>
+        <Style Selector="TextBlock.step">
+            <Setter Property="Margin" Value="0,4"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+        </Style>
+        <Style Selector="TextBlock.step.current">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Text}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style Selector="TextBlock.step.done">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Success}"/>
+        </Style>
+        <Style Selector="TextBlock.muted">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+        </Style>
+        <Style Selector="Border.note">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.SuccessBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.SuccessBorder}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Margin" Value="0,8,0,0"/>
+        </Style>
+        <Style Selector="Border.note.error">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.DangerBackground}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.DangerBorder}"/>
+        </Style>
+        <Style Selector="TextBlock.action-new">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Success}"/>
+        </Style>
+        <Style Selector="TextBlock.action-overwrite">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.WarningText}"/>
+        </Style>
+        <Style Selector="TextBlock.action-skip">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+        </Style>
+    </Window.Styles>
+
+    <DockPanel>
+        <!-- Footer -->
+        <Border DockPanel.Dock="Bottom" Background="{DynamicResource ApiConnectTool.Brush.Chrome}"
+                BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="0,1,0,0" Padding="10,8">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8">
+                    <Button x:Name="WizardBackButton" Classes="btn-dialog" Content="{DynamicResource Str.ImportWizard.Back}" Command="{Binding BackCommand}"/>
+                    <Button x:Name="WizardNextButton" Classes="accent btn-dialog" Content="{Binding NextText}" Command="{Binding NextCommand}" IsDefault="True"/>
+                    <Button x:Name="WizardCancelButton" Classes="btn-dialog" Content="{Binding CancelText}" Command="{Binding CancelCommand}" IsCancel="True"/>
+                </StackPanel>
+                <TextBlock x:Name="StepCounter" Classes="muted" Text="{Binding StepCounterText}" VerticalAlignment="Center"/>
+            </DockPanel>
+        </Border>
+
+        <!-- Step list -->
+        <Border DockPanel.Dock="Left" Width="170" Background="{DynamicResource ApiConnectTool.Brush.Pane}"
+                BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="0,0,1,0" Padding="12">
+            <ItemsControl x:Name="WizardSteps" ItemsSource="{Binding Steps}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:ImportStepItem">
+                        <TextBlock Classes="step" Classes.current="{Binding IsCurrent}" Classes.done="{Binding IsDone}" Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Border>
+
+        <!-- Header -->
+        <Border DockPanel.Dock="Top" Background="{DynamicResource ApiConnectTool.Brush.Surface}"
+                BorderBrush="{DynamicResource ApiConnectTool.Brush.BorderSubtle}" BorderThickness="0,0,0,1" Padding="14,10">
+            <StackPanel>
+                <TextBlock x:Name="StepTitleText" Text="{Binding StepTitle}" FontSize="{StaticResource FontSizeHeading}" FontWeight="SemiBold"/>
+                <TextBlock Text="{Binding StepDescription}" Classes="muted" TextWrapping="Wrap"/>
+            </StackPanel>
+        </Border>
+
+        <Panel Margin="14,10" Background="{DynamicResource ApiConnectTool.Brush.WindowBackground}">
+            <!-- Format -->
+            <StackPanel x:Name="FormatStep" IsVisible="{Binding IsFormatStep}" Spacing="6">
+                <ItemsControl ItemsSource="{Binding Formats}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ImportFormatChoice">
+                            <RadioButton GroupName="ImportFormat" Margin="0,2" Click="OnFormatClick" Tag="{Binding}">
+                                <RadioButton.IsChecked>
+                                    <MultiBinding Converter="{x:Static cv:ImportWizardConverters.SameFormat}" Mode="OneWay">
+                                        <Binding/>
+                                        <Binding Path="$parent[Window].((vm:ImportWizardViewModel)DataContext).SelectedFormat"/>
+                                    </MultiBinding>
+                                </RadioButton.IsChecked>
+                                <StackPanel Orientation="Horizontal" Spacing="8">
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding Extensions}" Classes="muted"/>
+                                </StackPanel>
+                            </RadioButton>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <!-- Source -->
+            <DockPanel x:Name="SourceStep" IsVisible="{Binding IsSourceStep}">
+                <StackPanel DockPanel.Dock="Top" Spacing="6">
+                    <RadioButton x:Name="FromFileOption" GroupName="ImportSource" Content="{DynamicResource Str.ImportWizard.FromFile}" IsChecked="{Binding IsFromFile}"/>
+                    <DockPanel IsEnabled="{Binding IsFromFile}" Margin="24,0,0,0">
+                        <Button DockPanel.Dock="Right" Content="{DynamicResource Str.ImportWizard.Browse}" Click="OnBrowseClick" Margin="6,0,0,0"/>
+                        <TextBox Text="{Binding FilePath}" IsReadOnly="True" AutomationProperties.Name="{DynamicResource Str.ImportWizard.FromFile}"/>
+                    </DockPanel>
+                    <RadioButton x:Name="PasteOption" GroupName="ImportSource" Content="{DynamicResource Str.ImportWizard.Paste}" IsChecked="{Binding IsPaste, Mode=OneWay}"
+                                 Click="OnPasteClick"/>
+                </StackPanel>
+                <StackPanel DockPanel.Dock="Bottom">
+                    <Border Classes="note" IsVisible="{Binding DetectionNote, Converter={x:Static conv:ObjectConverters.IsNotNull}}">
+                        <TextBlock x:Name="DetectionNoteText" Text="{Binding DetectionNote}" TextWrapping="Wrap" Foreground="{DynamicResource ApiConnectTool.Brush.Success}"/>
+                    </Border>
+                    <Border Classes="note error" IsVisible="{Binding SourceError, Converter={x:Static conv:ObjectConverters.IsNotNull}}">
+                        <TextBlock x:Name="SourceErrorText" Text="{Binding SourceError}" TextWrapping="Wrap" Foreground="{DynamicResource ApiConnectTool.Brush.DangerText}"/>
+                    </Border>
+                </StackPanel>
+                <TextBox x:Name="PasteTextBox" Margin="24,6,0,0" Text="{Binding PastedText}" IsEnabled="{Binding IsPaste}"
+                         AcceptsReturn="True" TextWrapping="Wrap" FontFamily="{StaticResource ApiConnectTool.FontFamily.Monospace}"
+                         PlaceholderText="{DynamicResource Str.ImportWizard.PastePlaceholder}"
+                         AutomationProperties.Name="{DynamicResource Str.ImportWizard.Paste}"/>
+            </DockPanel>
+
+            <!-- Options -->
+            <StackPanel x:Name="OptionsStep" IsVisible="{Binding IsOptionsStep}" Spacing="8">
+                <RadioButton x:Name="NewCollectionOption" GroupName="ImportTarget" Content="{DynamicResource Str.ImportWizard.NewCollection}"
+                             IsChecked="{Binding IsNewCollection, Mode=OneWay}" Click="OnNewCollectionClick"/>
+                <TextBox x:Name="CollectionNameTextBox" Margin="24,0,0,0" Width="320" HorizontalAlignment="Left" Text="{Binding CollectionName}"
+                         IsEnabled="{Binding IsNewCollection}" AutomationProperties.Name="{DynamicResource Str.ImportWizard.CollectionName}"/>
+                <RadioButton x:Name="ExistingCollectionOption" GroupName="ImportTarget" Content="{DynamicResource Str.ImportWizard.ExistingCollection}"
+                             IsChecked="{Binding ImportIntoExisting}" IsEnabled="{Binding HasExistingCollections}"/>
+                <ComboBox x:Name="ExistingCollectionPicker" Margin="24,0,0,0" Width="320" ItemsSource="{Binding ExistingCollections}"
+                          SelectedItem="{Binding ExistingCollection}" IsEnabled="{Binding ImportIntoExisting}"
+                          AutomationProperties.Name="{DynamicResource Str.ImportWizard.ExistingCollection}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="models:RequestCollection"><TextBlock Text="{Binding Name}"/></DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <CheckBox x:Name="OverwriteCheckBox" Margin="24,0,0,0" Content="{DynamicResource Str.ImportWizard.Overwrite}"
+                          IsChecked="{Binding OverwriteExisting}" IsEnabled="{Binding ImportIntoExisting}"/>
+                <CheckBox x:Name="ImportEnvironmentsCheckBox" Content="{DynamicResource Str.ImportWizard.ImportEnvironments}"
+                          IsChecked="{Binding ImportEnvironments}" IsVisible="{Binding CanImportEnvironments}" Margin="0,8,0,0"/>
+            </StackPanel>
+
+            <!-- Review -->
+            <DockPanel x:Name="ReviewStep" IsVisible="{Binding IsReviewStep}">
+                <TextBlock x:Name="ReviewSummaryText" DockPanel.Dock="Top" Text="{Binding ReviewSummary}" Margin="0,0,0,6"/>
+                <Border BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="1" Background="{DynamicResource ApiConnectTool.Brush.Surface}">
+                    <DockPanel>
+                        <Grid DockPanel.Dock="Top" ColumnDefinitions="30,90,*,90" Background="{DynamicResource ApiConnectTool.Brush.GridHeader}">
+                            <TextBlock Grid.Column="1" Text="{DynamicResource Str.ImportWizard.Type}" FontWeight="SemiBold" Margin="4,3"/>
+                            <TextBlock Grid.Column="2" Text="{DynamicResource Str.ImportWizard.Name}" FontWeight="SemiBold" Margin="4,3"/>
+                            <TextBlock Grid.Column="3" Text="{DynamicResource Str.ImportWizard.ActionColumn}" FontWeight="SemiBold" Margin="4,3"/>
+                        </Grid>
+                        <ScrollViewer>
+                            <ItemsControl x:Name="ReviewRows" ItemsSource="{Binding ReviewItems}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:ImportReviewItem">
+                                        <Grid ColumnDefinitions="30,90,*,90" Height="24">
+                                            <CheckBox Grid.Column="0" IsChecked="{Binding IsIncluded}" HorizontalAlignment="Center"
+                                                      AutomationProperties.Name="{Binding Name}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding KindText}" Classes="muted" VerticalAlignment="Center" Margin="4,0"/>
+                                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center"
+                                                        Margin="{Binding Indent, Converter={x:Static cv:ImportWizardConverters.LeftMargin}}">
+                                                <TextBlock Text="{Binding Method}" FontWeight="Bold" FontSize="11"
+                                                           IsVisible="{Binding Method, Converter={x:Static conv:ObjectConverters.IsNotNull}}"
+                                                           views:TokenBrush.Foreground="{Binding Method, Converter={x:Static cv:TokenKeys.Method}}"/>
+                                                <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+                                            <TextBlock Grid.Column="3" Text="{Binding ActionText}" VerticalAlignment="Center" Margin="4,0"
+                                                       Classes.action-new="{Binding Action, Converter={x:Static cv:ImportWizardConverters.IsNew}}"
+                                                       Classes.action-skip="{Binding Action, Converter={x:Static cv:ImportWizardConverters.IsSkip}}"
+                                                       Classes.action-overwrite="{Binding Action, Converter={x:Static cv:ImportWizardConverters.IsOverwrite}}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Border>
+            </DockPanel>
+
+            <!-- Import -->
+            <DockPanel x:Name="ImportStep" IsVisible="{Binding IsImportStep}">
+                <ProgressBar x:Name="ImportProgress" DockPanel.Dock="Top" Minimum="0" Maximum="1" Value="{Binding Progress}" Height="8"/>
+                <TextBlock x:Name="FinishTextBlock" DockPanel.Dock="Bottom" Text="{Binding FinishText}" FontWeight="SemiBold" TextWrapping="Wrap"
+                           Margin="0,6,0,0" Foreground="{DynamicResource ApiConnectTool.Brush.Success}"/>
+                <Border Margin="0,8,0,0" BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="1" Background="{DynamicResource ApiConnectTool.Brush.Code.Background}">
+                    <ScrollViewer>
+                        <ItemsControl x:Name="ImportLog" ItemsSource="{Binding Log}" Margin="8,4">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="x:String">
+                                    <TextBlock Text="{Binding}" FontFamily="{StaticResource ApiConnectTool.FontFamily.Monospace}" FontSize="12"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
+            </DockPanel>
+        </Panel>
+    </DockPanel>
+</Window>

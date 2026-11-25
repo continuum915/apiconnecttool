@@ -1,0 +1,63 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ApiConnectTool.ViewModels" xmlns:views="using:ApiConnectTool.Views"
+        x:Class="ApiConnectTool.Views.VariableInspectorWindow" x:DataType="vm:VariableInspectorViewModel"
+        Title="{DynamicResource Str.VariableInspector.Title}" Width="900" Height="640"
+        MinWidth="640" MinHeight="400" WindowStartupLocation="CenterOwner"
+        views:HelpContext.TopicId="environments">
+    <Grid RowDefinitions="Auto,Auto,*,Auto" Margin="16">
+        <TextBlock Text="{DynamicResource Str.VariableInspector.Preview}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+        <TextBlock Grid.Row="1" Text="{DynamicResource Str.VariableInspector.Precedence}" TextWrapping="Wrap" Margin="0,0,0,12"/>
+        <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Spacing="12">
+                <TextBlock Text="{DynamicResource Str.VariableInspector.NoReferences}" IsVisible="{Binding IsEmpty}" TextWrapping="Wrap"/>
+                <ItemsControl ItemsSource="{Binding Variables}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:InspectedVariableViewModel">
+                            <Border BorderBrush="{DynamicResource ApiConnectTool.Brush.BorderSubtle}" BorderThickness="1" Padding="12" Margin="0,0,0,12">
+                                <StackPanel Spacing="6">
+                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" TextWrapping="Wrap"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="12">
+                                        <TextBlock Text="{Binding Status}"/>
+                                        <TextBlock Text="{Binding ValueKind}"/>
+                                    </StackPanel>
+                                    <TextBlock Text="{Binding Source}" TextWrapping="Wrap"/>
+                                    <TextBlock Text="{DynamicResource Str.VariableInspector.EffectiveValue}" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding DisplayValue}" TextWrapping="Wrap"/>
+                                    <Button Content="{DynamicResource Str.VariableInspector.EditSource}" Command="{Binding EditSourceCommand}" IsVisible="{Binding !IsUnresolved}"/>
+                                    <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsUnresolved}">
+                                        <Button Content="{DynamicResource Str.VariableInspector.EditEnvironment}" Command="{Binding EditEnvironmentCommand}"/>
+                                        <Button Content="{DynamicResource Str.VariableInspector.EditGlobals}" Command="{Binding EditGlobalsCommand}"/>
+                                    </StackPanel>
+                                    <ItemsControl ItemsSource="{Binding Definitions}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="vm:InspectedDefinitionViewModel">
+                                                <Border BorderBrush="{DynamicResource ApiConnectTool.Brush.BorderSubtle}" BorderThickness="0,1,0,0" Padding="0,8" Margin="0,4,0,0">
+                                                    <StackPanel Spacing="4">
+                                                        <TextBlock Text="{Binding Source}" TextWrapping="Wrap"/>
+                                                        <StackPanel Orientation="Horizontal" Spacing="12">
+                                                            <TextBlock Text="{Binding Status}"/>
+                                                            <TextBlock Text="{Binding ValueKind}"/>
+                                                        </StackPanel>
+                                                        <TextBlock Text="{DynamicResource Str.VariableInspector.Default}"/>
+                                                        <TextBlock Text="{Binding DefaultValue}" TextWrapping="Wrap"/>
+                                                        <TextBlock Text="{DynamicResource Str.VariableInspector.Override}"/>
+                                                        <TextBlock Text="{Binding OverrideValue}" TextWrapping="Wrap"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
+        <Grid Grid.Row="3" ColumnDefinitions="*,Auto" Margin="0,12,0,0">
+            <CheckBox Content="{DynamicResource Str.VariableInspector.Reveal}" IsChecked="{Binding RevealSecrets}"/>
+            <Button Grid.Column="1" Content="{DynamicResource Str.VariableInspector.Close}" Click="OnCloseClick" IsDefault="True"/>
+        </Grid>
+    </Grid>
+</Window>

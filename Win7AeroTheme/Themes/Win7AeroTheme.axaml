@@ -1,0 +1,46 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Styles.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <MergeResourceInclude Source="avares://Win7AeroTheme/Themes/Resources/Colors.axaml" />
+        <MergeResourceInclude Source="avares://Win7AeroTheme/Themes/Resources/Brushes.axaml" />
+        <MergeResourceInclude Source="avares://Win7AeroTheme/Themes/Resources/Metrics.axaml" />
+        <MergeResourceInclude Source="avares://Win7AeroTheme/Themes/Resources/Typography.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Styles.Resources>
+
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/Button.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/ToggleButton.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/TextBox.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/ComboBox.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/CheckBox.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/RadioButton.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/ProgressBar.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/Slider.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/TabControl.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/ListBox.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/TreeView.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/Menu.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/ContextMenu.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/ToolTip.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/ScrollBar.axaml" />
+  <StyleInclude Source="avares://Win7AeroTheme/Themes/Controls/DataGrid.axaml" />
+
+  <Style Selector=":is(TemplatedControl)">
+    <Setter Property="FontFamily" Value="{DynamicResource Win7.FontFamily.UI}" />
+    <Setter Property="FontSize" Value="{DynamicResource Win7.FontSize.Body}" />
+  </Style>
+
+  <Style Selector="TextBlock">
+    <Setter Property="FontFamily" Value="{DynamicResource Win7.FontFamily.UI}" />
+    <Setter Property="FontSize" Value="{DynamicResource Win7.FontSize.Body}" />
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}" />
+  </Style>
+
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.WindowBackground}" />
+    <Setter Property="FontFamily" Value="{DynamicResource Win7.FontFamily.UI}" />
+  </Style>
+</Styles>

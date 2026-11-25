@@ -1,0 +1,13 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="Menu">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.PanelChrome}" />
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}" />
+  </Style>
+  <Style Selector="MenuItem">
+    <Setter Property="Padding" Value="8,4" />
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}" />
+  </Style>
+  <Style Selector="MenuItem:pointerover">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.ControlFaceHover}" />
+  </Style>
+</Styles>

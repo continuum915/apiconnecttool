@@ -1,0 +1,37 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- Vector icons on a 16 by 16 grid, drawn as 1.25-unit strokes by AppIcon
+         (ApiConnectTool/Views/Components/AppIcon.cs) with theme token brushes. Lines sit on half units
+         so they land on pixel centers at 100% scaling. No emoji, icon fonts or bitmaps. -->
+    <StreamGeometry x:Key="ApiConnectTool.Icon.NewRequest">M3.5,1.5 H9.5 L12.5,4.5 V8 M9.5,1.5 V4.5 H12.5 M3.5,1.5 V14.5 H8 M12.5,10 V15 M10,12.5 H15</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.NewCollection">M1.5,5.5 H10.5 V13.5 H1.5 Z M3.5,3.5 H12.5 V8.5 M1.5,8.5 H10.5 M12.5,10 V15 M10,12.5 H15</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Import">M8,1.5 V10 M4.5,6.5 L8,10 L11.5,6.5 M1.5,10.5 V14.5 H14.5 V10.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Export">M8,10.5 V2 M4.5,5.5 L8,2 L11.5,5.5 M1.5,10.5 V14.5 H14.5 V10.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Run">M4.5,2.5 L13,8 L4.5,13.5 Z</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Stop">M3.5,3.5 H12.5 V12.5 H3.5 Z</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.History">M2.5,8 A5.5,5.5 0 1 0 4.1,4.1 M1.5,2 V5 H4.5 M8,4.5 V8 L10.5,9.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Console">M1.5,2.5 H14.5 V13.5 H1.5 Z M4,6 L6.5,8 L4,10 M8,10.5 H12</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Variables">M5.5,2.5 C4,2.5 4,3.5 4,5 V6.5 C4,7.5 3,8 2,8 C3,8 4,8.5 4,9.5 V11 C4,12.5 4,13.5 5.5,13.5 M10.5,2.5 C12,2.5 12,3.5 12,5 V6.5 C12,7.5 13,8 14,8 C13,8 12,8.5 12,9.5 V11 C12,12.5 12,13.5 10.5,13.5 M6.5,6 L9.5,10 M9.5,6 L6.5,10</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Environment">M14.5,8 A6.5,6.5 0 1 1 1.5,8 A6.5,6.5 0 1 1 14.5,8 Z M1.5,8 H14.5 M8,1.5 C5,4 5,12 8,14.5 M8,1.5 C11,4 11,12 8,14.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Save">M1.5,1.5 H11.5 L14.5,4.5 V14.5 H1.5 Z M4.5,1.5 V5.5 H10.5 V1.5 M4.5,14.5 V9.5 H11.5 V14.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Copy">M5.5,5.5 H14.5 V14.5 H5.5 Z M3.5,10.5 H1.5 V1.5 H10.5 V3.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Delete">M2,3.5 H14 M6,3.5 V1.5 H10 V3.5 M3.5,3.5 L4.5,14.5 H11.5 L12.5,3.5 M6.5,6 V12 M9.5,6 V12</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Duplicate">M5.5,5.5 H14.5 V14.5 H5.5 Z M3.5,10.5 H1.5 V1.5 H10.5 V3.5 M10,7.5 V12.5 M7.5,10 H12.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Add">M8,2 V14 M2,8 H14</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Search">M10.5,6.5 A4,4 0 1 1 2.5,6.5 A4,4 0 1 1 10.5,6.5 Z M9.5,9.5 L14.5,14.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Collection">M1.5,4.5 H14.5 V13.5 H1.5 Z M3.5,2.5 H12.5 M1.5,7.5 H14.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Folder">M1.5,3.5 H6 L7.5,5 H14.5 V13.5 H1.5 Z</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.ChevronRight">M6,4 L10,8 L6,12</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.ChevronDown">M4,6 L8,10 L12,6</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Close">M4,4 L12,12 M12,4 L4,12</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Check">M3,8.5 L6.5,12 L13,4.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Cross">M3.5,3.5 L12.5,12.5 M12.5,3.5 L3.5,12.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Warning">M8,1.5 L14.5,14 H1.5 Z M8,6 V9.5 M8,11.5 V12.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Error">M14.5,8 A6.5,6.5 0 1 1 1.5,8 A6.5,6.5 0 1 1 14.5,8 Z M5.5,5.5 L10.5,10.5 M10.5,5.5 L5.5,10.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Info">M14.5,8 A6.5,6.5 0 1 1 1.5,8 A6.5,6.5 0 1 1 14.5,8 Z M8,7 V11.5 M8,4.5 V5.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Network">M2,5.5 H13 M10,2.5 L13,5.5 L10,8.5 M14,10.5 H3 M6,7.5 L3,10.5 L6,13.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Script">M3.5,1.5 H9.5 L12.5,4.5 V14.5 H3.5 Z M9.5,1.5 V4.5 H12.5 M7,8 L5.5,9.75 L7,11.5 M9,8 L10.5,9.75 L9,11.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Compare">M1.5,2.5 H6.5 V13.5 H1.5 Z M9.5,2.5 H14.5 V13.5 H9.5 Z M3,6 H5 M11,6 H13 M3,9 H5 M11,9 H13</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Resend">M13.5,8 A5.5,5.5 0 1 1 11.9,4.1 M12.5,1.5 V4.5 H9.5</StreamGeometry>
+    <StreamGeometry x:Key="ApiConnectTool.Icon.Lock">M3.5,7.5 H12.5 V14.5 H3.5 Z M5.5,7.5 V5 A2.5,2.5 0 0 1 10.5,5 V7.5</StreamGeometry>
+</ResourceDictionary>

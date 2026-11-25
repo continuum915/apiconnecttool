@@ -1,0 +1,11 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="CheckBox">
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}" />
+  </Style>
+  <Style Selector="CheckBox:pointerover">
+    <Setter Property="Foreground" Value="#FF003C74" />
+  </Style>
+  <Style Selector="CheckBox:disabled">
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.DisabledText}" />
+  </Style>
+</Styles>

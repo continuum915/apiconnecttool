@@ -1,0 +1,205 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:ApiConnectTool.ViewModels"
+             xmlns:models="using:ApiConnectTool.Models"
+             xmlns:comp="using:ApiConnectTool.Views.Components"
+             xmlns:views="using:ApiConnectTool.Views"
+             mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="56"
+             x:Class="ApiConnectTool.Views.Components.AppToolbarControl"
+             x:DataType="vm:MainWindowViewModel">
+
+    <!-- Classic labeled icon toolbar: each button is an icon above a text label and runs the same
+         command as its menu item. The right side hosts the active tab's collection environment
+         picker and, once a global environment exists, the global picker. -->
+    <UserControl.Styles>
+        <Style Selector="ToggleButton.toolbar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="MinWidth" Value="56"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Text}"/>
+        </Style>
+        <Style Selector="ToggleButton.toolbar:checked /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Selection}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.SelectionText}"/>
+        </Style>
+        <Style Selector="ToggleButton.toolbar:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Hover}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Text}"/>
+        </Style>
+        <Style Selector="Button.toolbar">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="6,3"/>
+            <Setter Property="MinWidth" Value="56"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Text}"/>
+            <Setter Property="ToolTip.ShowOnDisabled" Value="True"/>
+        </Style>
+        <Style Selector="Button.toolbar:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Hover}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.Border}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Text}"/>
+        </Style>
+        <Style Selector="Button.toolbar TextBlock.toolbar-label">
+            <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,2,0,0"/>
+        </Style>
+        <Style Selector="Rectangle.toolbar-separator">
+            <Setter Property="Width" Value="1"/>
+            <Setter Property="Margin" Value="6,6"/>
+            <Setter Property="Fill" Value="{DynamicResource ApiConnectTool.Brush.Border}"/>
+        </Style>
+        <Style Selector="TextBlock.picker-caption">
+            <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+        <Style Selector="Border.prod-tag">
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.Danger}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="2"/>
+            <Setter Property="Padding" Value="3,0"/>
+            <Setter Property="Margin" Value="6,0,0,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+        <Style Selector="Border.prod-tag TextBlock">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Danger}"/>
+        </Style>
+    </UserControl.Styles>
+
+    <Border Background="{DynamicResource ApiConnectTool.Brush.Chrome}"
+            BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}"
+            BorderThickness="0,0,0,1" Padding="6,3"
+            AutomationProperties.Name="{DynamicResource Str.Toolbar.AutomationName}">
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                <StackPanel Margin="8,0,0,0">
+                    <TextBlock x:Name="CollectionEnvironmentCaption" Classes="picker-caption"
+                               Text="{Binding CollectionEnvironmentPicker.Caption}"/>
+                    <ComboBox x:Name="CollectionEnvironmentPicker"
+                              ItemsSource="{Binding CollectionEnvironmentPicker.Items}"
+                              SelectedItem="{Binding CollectionEnvironmentPicker.SelectedItem}"
+                              IsEnabled="{Binding CollectionEnvironmentPicker.IsEnabled}"
+                              ToolTip.Tip="{Binding CollectionEnvironmentPicker.ToolTip}"
+                              ToolTip.ShowOnDisabled="True"
+                              AutomationProperties.Name="{Binding CollectionEnvironmentPicker.Caption}"
+                              PlaceholderText="{DynamicResource Str.Runner.NoCollectionEnvironment}"
+                              Width="220">
+                        <ComboBox.DataTemplates>
+                            <DataTemplate DataType="vm:EnvironmentChoice">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                    <Border Classes="prod-tag" IsVisible="{Binding IsProduction}">
+                                        <TextBlock Text="{DynamicResource Str.Environment.ProdTag}"/>
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                            <DataTemplate DataType="vm:EnvironmentPickerAction">
+                                <TextBlock Text="{Binding Text}" Foreground="{DynamicResource ApiConnectTool.Brush.AccentText}"
+                                           IsEnabled="{Binding IsEnabled}"/>
+                            </DataTemplate>
+                        </ComboBox.DataTemplates>
+                    </ComboBox>
+                </StackPanel>
+                <StackPanel x:Name="GlobalEnvironmentPanel" Margin="12,0,0,0"
+                            IsVisible="{Binding HasGlobalEnvironments}">
+                    <TextBlock Classes="picker-caption" Text="{DynamicResource Str.Toolbar.GlobalEnvironmentCaption}"/>
+                    <ComboBox x:Name="GlobalEnvironmentPicker"
+                              ItemsSource="{Binding Environments}"
+                              SelectedItem="{Binding SelectedEnvironment}"
+                              AutomationProperties.Name="{DynamicResource Str.Toolbar.GlobalEnvironmentCaption}"
+                              PlaceholderText="{DynamicResource Str.Toolbar.NoGlobalEnvironment}"
+                              Width="180">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate x:DataType="models:RequestEnvironment">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                                    <Border Classes="prod-tag" IsVisible="{Binding IsProduction}">
+                                        <TextBlock Text="{DynamicResource Str.Environment.ProdTag}"/>
+                                    </Border>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel x:Name="ToolbarButtons" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button x:Name="NewRequestToolbarButton" Classes="toolbar"
+                        Command="{Binding AddTabCommand}"
+                        ToolTip.Tip="{DynamicResource Str.Toolbar.NewRequestTip}"
+                        AutomationProperties.Name="{DynamicResource Str.Toolbar.NewRequest}">
+                    <StackPanel>
+                        <comp:AppIcon Kind="NewRequest" Size="22"/>
+                        <TextBlock Classes="toolbar-label" Text="{DynamicResource Str.Toolbar.NewRequest}"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="NewCollectionToolbarButton" Classes="toolbar"
+                        Command="{Binding CollectionsPanel.AddCollectionCommand}"
+                        ToolTip.Tip="{DynamicResource Str.Toolbar.NewCollectionTip}"
+                        AutomationProperties.Name="{DynamicResource Str.Toolbar.NewCollection}">
+                    <StackPanel>
+                        <comp:AppIcon Kind="NewCollection" Size="22"/>
+                        <TextBlock Classes="toolbar-label" Text="{DynamicResource Str.Toolbar.NewCollection}"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="ImportToolbarButton" Classes="toolbar"
+                        ToolTip.Tip="{DynamicResource Str.Toolbar.ImportTip}"
+                        AutomationProperties.Name="{DynamicResource Str.Toolbar.Import}"
+                        views:HelpContext.TopicId="import-and-export" Click="OnImportClick">
+                    <StackPanel>
+                        <comp:AppIcon Kind="Import" Size="22"/>
+                        <TextBlock Classes="toolbar-label" Text="{DynamicResource Str.Toolbar.Import}"/>
+                    </StackPanel>
+                </Button>
+                <Rectangle Classes="toolbar-separator"/>
+                <Button x:Name="RunCollectionToolbarButton" Classes="toolbar"
+                        Command="{Binding Commands.RunActiveCollectionCommand}"
+                        ToolTip.Tip="{Binding Commands.RunCollectionToolTip}"
+                        AutomationProperties.Name="{DynamicResource Str.Toolbar.RunCollection}">
+                    <StackPanel>
+                        <comp:AppIcon Kind="Run" Size="22" BrushKey="ApiConnectTool.Brush.Success"/>
+                        <TextBlock Classes="toolbar-label" Text="{DynamicResource Str.Toolbar.RunCollection}"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="HistoryToolbarButton" Classes="toolbar"
+                        Command="{Binding Commands.OpenHistoryWindowCommand}"
+                        ToolTip.Tip="{DynamicResource Str.Toolbar.HistoryTip}"
+                        AutomationProperties.Name="{DynamicResource Str.Toolbar.History}">
+                    <StackPanel>
+                        <comp:AppIcon Kind="History" Size="22"/>
+                        <TextBlock Classes="toolbar-label" Text="{DynamicResource Str.Toolbar.History}"/>
+                    </StackPanel>
+                </Button>
+                <Button x:Name="ConsoleToolbarButton" Classes="toolbar"
+                        Command="{Binding Commands.OpenConsoleCommand}"
+                        ToolTip.Tip="{DynamicResource Str.Toolbar.ConsoleTip}"
+                        AutomationProperties.Name="{DynamicResource Str.Toolbar.Console}">
+                    <StackPanel>
+                        <comp:AppIcon Kind="Console" Size="22"/>
+                        <TextBlock Classes="toolbar-label" Text="{DynamicResource Str.Toolbar.Console}"/>
+                    </StackPanel>
+                </Button>
+                <ToggleButton x:Name="VariablesToolbarButton" Classes="toolbar"
+                              IsChecked="{Binding VariablesPane.IsVisible}"
+                              ToolTip.Tip="{DynamicResource Str.Toolbar.VariablesTip}"
+                              AutomationProperties.Name="{DynamicResource Str.Toolbar.Variables}">
+                    <StackPanel>
+                        <comp:AppIcon Kind="Variables" Size="22"/>
+                        <TextBlock Classes="toolbar-label" Text="{DynamicResource Str.Toolbar.Variables}"/>
+                    </StackPanel>
+                </ToggleButton>
+            </StackPanel>
+        </DockPanel>
+    </Border>
+
+</UserControl>

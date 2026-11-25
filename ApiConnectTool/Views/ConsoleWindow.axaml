@@ -1,0 +1,135 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ApiConnectTool.ViewModels" xmlns:views="using:ApiConnectTool.Views" xmlns:cv="using:ApiConnectTool.Converters"
+        xmlns:comp="using:ApiConnectTool.Views.Components"
+        x:Class="ApiConnectTool.Views.ConsoleWindow"
+        x:DataType="vm:ConsoleWindowViewModel" Title="{DynamicResource Str.Console.Title}"
+        Width="980" Height="560" MinWidth="620" MinHeight="320"
+        Background="{DynamicResource ApiConnectTool.Brush.WindowBackground}"
+        views:HelpContext.TopicId="console">
+
+    <Window.Styles>
+        <Style Selector="Border.window-toolbar">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Chrome}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.Border}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+            <Setter Property="Padding" Value="8,6"/>
+        </Style>
+        <Style Selector="RadioButton.filter">
+            <Setter Property="Margin" Value="0,0,10,0"/>
+        </Style>
+        <Style Selector="Border.console-row">
+            <Setter Property="Padding" Value="6,2"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+        <Style Selector="Border.console-row.warning">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.WarningBackground}"/>
+        </Style>
+        <Style Selector="Border.console-row.error">
+            <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.DangerBackground}"/>
+        </Style>
+        <Style Selector="TextBlock.mono, SelectableTextBlock.mono">
+            <Setter Property="FontFamily" Value="{StaticResource ApiConnectTool.FontFamily.Monospace}"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+        <Style Selector="TextBlock.muted">
+            <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.TextMuted}"/>
+        </Style>
+        <Style Selector="Button.chevron">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Width" Value="16"/>
+            <Setter Property="ToolTip.Tip" Value="{DynamicResource Str.Console.Expand}"/>
+            <Setter Property="AutomationProperties.Name" Value="{DynamicResource Str.Console.Expand}"/>
+        </Style>
+    </Window.Styles>
+
+    <DockPanel>
+        <Border DockPanel.Dock="Top" Classes="window-toolbar">
+            <DockPanel>
+                <TextBox x:Name="ConsoleSearchBox" DockPanel.Dock="Right" Width="200" Text="{Binding SearchText}"
+                         PlaceholderText="{DynamicResource Str.Console.Search}" AutomationProperties.Name="{DynamicResource Str.Console.Search}"/>
+                <StackPanel Orientation="Horizontal" Spacing="4">
+                    <Button x:Name="ClearConsoleButton" Content="{DynamicResource Str.Console.Clear}" Command="{Binding ClearCommand}" Margin="0,0,10,0"/>
+                    <StackPanel x:Name="ConsoleFilters" Orientation="Horizontal" VerticalAlignment="Center">
+                        <RadioButton x:Name="FilterAll" Classes="filter" GroupName="ConsoleFilter" Content="{Binding AllText}"
+                                     IsChecked="{Binding Filter, Converter={StaticResource EqualsConverter}, ConverterParameter=All, Mode=OneWay}"
+                                     Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:ConsoleFilter.All}"/>
+                        <RadioButton x:Name="FilterNetwork" Classes="filter" GroupName="ConsoleFilter" Content="{Binding NetworkText}"
+                                     IsChecked="{Binding Filter, Converter={StaticResource EqualsConverter}, ConverterParameter=Network, Mode=OneWay}"
+                                     Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:ConsoleFilter.Network}"/>
+                        <RadioButton x:Name="FilterScripts" Classes="filter" GroupName="ConsoleFilter" Content="{Binding ScriptsText}"
+                                     IsChecked="{Binding Filter, Converter={StaticResource EqualsConverter}, ConverterParameter=Scripts, Mode=OneWay}"
+                                     Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:ConsoleFilter.Scripts}"/>
+                        <RadioButton x:Name="FilterWarnings" Classes="filter" GroupName="ConsoleFilter" Content="{Binding WarningsText}"
+                                     IsChecked="{Binding Filter, Converter={StaticResource EqualsConverter}, ConverterParameter=Warnings, Mode=OneWay}"
+                                     Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:ConsoleFilter.Warnings}"/>
+                        <RadioButton x:Name="FilterErrors" Classes="filter" GroupName="ConsoleFilter" Content="{Binding ErrorsText}"
+                                     IsChecked="{Binding Filter, Converter={StaticResource EqualsConverter}, ConverterParameter=Errors, Mode=OneWay}"
+                                     Command="{Binding SetFilterCommand}" CommandParameter="{x:Static vm:ConsoleFilter.Errors}"/>
+                    </StackPanel>
+                    <CheckBox x:Name="TimestampsCheckBox" Content="{DynamicResource Str.Console.Timestamps}" IsChecked="{Binding ShowTimestamps}" Margin="6,0,0,0"/>
+                    <CheckBox x:Name="PreserveLogCheckBox" Content="{DynamicResource Str.Console.PreserveLog}" IsChecked="{Binding PreserveLog}"
+                              ToolTip.Tip="{DynamicResource Str.Console.PreserveLogTip}"/>
+                </StackPanel>
+            </DockPanel>
+        </Border>
+
+        <Border DockPanel.Dock="Bottom" Background="{DynamicResource ApiConnectTool.Brush.StatusBar}"
+                BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}" BorderThickness="0,1,0,0" Padding="8,2">
+            <StackPanel Orientation="Horizontal" Spacing="16">
+                <TextBlock x:Name="ConsoleShownText" Classes="muted" Text="{Binding ShownText}" FontSize="{StaticResource FontSizeCaption}"/>
+                <TextBlock Classes="muted" Text="{Binding LimitsText}" FontSize="{StaticResource FontSizeCaption}"/>
+                <TextBlock Classes="muted" Text="{Binding ErrorCountText}" FontSize="{StaticResource FontSizeCaption}"/>
+                <TextBlock Classes="muted" Text="{Binding WarningCountText}" FontSize="{StaticResource FontSizeCaption}"/>
+            </StackPanel>
+        </Border>
+
+        <Panel Background="{DynamicResource ApiConnectTool.Brush.Code.Background}">
+            <TextBlock Text="{DynamicResource Str.Console.Empty}" Classes="muted" Margin="12" IsVisible="{Binding IsEmpty}"/>
+            <ScrollViewer x:Name="ConsoleScroll" HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl x:Name="ConsoleRows" ItemsSource="{Binding Rows}" AutomationProperties.Name="{DynamicResource Str.Console.ListName}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:ConsoleRow">
+                            <Border Classes="console-row" Classes.warning="{Binding IsWarning}" Classes.error="{Binding IsError}">
+                                <StackPanel>
+                                    <Grid ColumnDefinitions="18,Auto,20,*">
+                                        <Button Grid.Column="0" Classes="chevron" IsVisible="{Binding IsNetwork}" Command="{Binding ToggleExpandedCommand}">
+                                            <Panel>
+                                                <comp:AppIcon Kind="ChevronRight" Size="12" BrushKey="ApiConnectTool.Brush.TextMuted" IsVisible="{Binding !IsExpanded}"/>
+                                                <comp:AppIcon Kind="ChevronDown" Size="12" BrushKey="ApiConnectTool.Brush.TextMuted" IsVisible="{Binding IsExpanded}"/>
+                                            </Panel>
+                                        </Button>
+                                        <TextBlock Grid.Column="1" Classes="mono muted" Text="{Binding TimeText}" Margin="0,0,8,0" VerticalAlignment="Center"
+                                                   IsVisible="{Binding $parent[ItemsControl].((vm:ConsoleWindowViewModel)DataContext).ShowTimestamps}"/>
+                                        <comp:AppIcon Grid.Column="2" Size="13" Kind="{Binding IconKind}" BrushKey="{Binding IconBrushKey}" VerticalAlignment="Center"/>
+                                        <Panel Grid.Column="3" Margin="4,0,0,0">
+                                            <SelectableTextBlock Classes="mono" Text="{Binding Text}" TextWrapping="Wrap" IsVisible="{Binding !IsNetwork}"/>
+                                            <StackPanel Orientation="Horizontal" Spacing="8" IsVisible="{Binding IsNetwork}">
+                                                <TextBlock Classes="mono" Text="{Binding Network.Method}" FontWeight="Bold"
+                                                           views:TokenBrush.Foreground="{Binding Network.Method, Converter={x:Static cv:TokenKeys.Method}}"/>
+                                                <SelectableTextBlock Classes="mono" Text="{Binding Network.Url}" TextWrapping="Wrap"/>
+                                                <TextBlock Classes="mono" Text="{Binding StatusText}" FontWeight="SemiBold"
+                                                           views:TokenBrush.Foreground="{Binding Network.StatusCode, Converter={x:Static cv:TokenKeys.StatusCode}}"/>
+                                                <TextBlock Classes="mono muted" Text="{Binding ElapsedText}"/>
+                                            </StackPanel>
+                                        </Panel>
+                                    </Grid>
+                                    <StackPanel x:Name="NetworkDetails" Margin="42,4,0,4" Spacing="2" IsVisible="{Binding IsExpanded}">
+                                        <TextBlock Text="{DynamicResource Str.Console.RequestHeaders}" FontWeight="SemiBold"/>
+                                        <SelectableTextBlock Classes="mono" Text="{Binding Network.RequestHeaders}" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{DynamicResource Str.Console.ResponseHeaders}" FontWeight="SemiBold" Margin="0,4,0,0"/>
+                                        <SelectableTextBlock Classes="mono" Text="{Binding Network.ResponseHeaders}" TextWrapping="Wrap"/>
+                                        <TextBlock Text="{DynamicResource Str.Console.ResponseBody}" FontWeight="SemiBold" Margin="0,4,0,0"/>
+                                        <SelectableTextBlock Classes="mono" Text="{Binding Network.BodyPreview}" TextWrapping="Wrap"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Panel>
+    </DockPanel>
+</Window>

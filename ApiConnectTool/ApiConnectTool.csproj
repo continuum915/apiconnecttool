@@ -1,0 +1,47 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<AssemblyName>ApiConnectTool</AssemblyName>
+		<RootNamespace>ApiConnectTool</RootNamespace>
+		<Product>ApiConnectTool</Product>
+		<Title>ApiConnectTool</Title>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ApplicationManifest>app.manifest</ApplicationManifest>
+		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Folder Include="Models\" />
+		<AvaloniaResource Include="Assets\**" />
+		<EmbeddedResource Include="Localization\Strings.en-US.axaml" LogicalName="ApiConnectTool.Localization.DefaultStrings" WithCulture="false" />
+		<EmbeddedResource Include="Help\**\*.md" WithCulture="false" />
+
+
+
+
+
+
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Jint" Version="4.16.4" />
+		<ProjectReference Include="..\Win7AeroTheme\Win7AeroTheme.csproj" />
+		<PackageReference Include="Avalonia" Version="12.1.0" />
+		<PackageReference Include="Avalonia.AvaloniaEdit" Version="12.0.0" />
+		<PackageReference Include="Avalonia.Desktop" Version="12.1.0" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.0" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="12.1.0" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.0" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.5" />
+		<PackageReference Include="Microsoft.Extensions.Http" Version="10.0.5" />
+		<PackageReference Include="System.Security.Cryptography.ProtectedData" Version="10.0.5" />
+		<PackageReference Include="Tmds.DBus.Protocol" Version="0.94.2" />
+	</ItemGroup>
+	<ItemGroup>
+		<!-- Headless view tests read dialogs' named controls (generated as internal fields). -->
+		<InternalsVisibleTo Include="ApiConnectTool.Tests" />
+	</ItemGroup>
+</Project>

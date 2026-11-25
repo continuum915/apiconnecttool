@@ -1,0 +1,39 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Light">
+      <Color x:Key="Win7.Color.WindowBackground">#FFF3F7FB</Color>
+      <Color x:Key="Win7.Color.Surface">#FFFFFFFF</Color>
+      <Color x:Key="Win7.Color.ControlFace">#FFEAF3FC</Color>
+      <Color x:Key="Win7.Color.ControlFaceHover">#FFD9ECFC</Color>
+      <Color x:Key="Win7.Color.ControlFacePressed">#FFC1DAF1</Color>
+      <Color x:Key="Win7.Color.ControlBorder">#FF8BA6BC</Color>
+      <Color x:Key="Win7.Color.ControlBorderDark">#FF6D879C</Color>
+      <Color x:Key="Win7.Color.FocusGlow">#FF3C9FE6</Color>
+      <Color x:Key="Win7.Color.Selection">#FF3399FF</Color>
+      <!-- Fixed near-white, not theme-flipped: Selection is a saturated blue in both variants,
+           so the text drawn on top of it needs to stay light regardless of light/dark mode. -->
+      <Color x:Key="Win7.Color.OnAccent">#FFFFFFFF</Color>
+      <Color x:Key="Win7.Color.Text">#FF1E1E1E</Color>
+      <Color x:Key="Win7.Color.TextMuted">#FF5D6973</Color>
+      <Color x:Key="Win7.Color.DisabledText">#FF8A9299</Color>
+      <Color x:Key="Win7.Color.ProgressFill">#FF76B900</Color>
+    </ResourceDictionary>
+    <ResourceDictionary x:Key="Dark">
+      <Color x:Key="Win7.Color.WindowBackground">#FF1D242B</Color>
+      <Color x:Key="Win7.Color.Surface">#FF26313A</Color>
+      <Color x:Key="Win7.Color.ControlFace">#FF314250</Color>
+      <Color x:Key="Win7.Color.ControlFaceHover">#FF3D5870</Color>
+      <Color x:Key="Win7.Color.ControlFacePressed">#FF25394A</Color>
+      <Color x:Key="Win7.Color.ControlBorder">#FF6F8FA6</Color>
+      <Color x:Key="Win7.Color.ControlBorderDark">#FF91AFC2</Color>
+      <Color x:Key="Win7.Color.FocusGlow">#FF62B5F7</Color>
+      <Color x:Key="Win7.Color.Selection">#FF3B86D1</Color>
+      <Color x:Key="Win7.Color.OnAccent">#FFFFFFFF</Color>
+      <Color x:Key="Win7.Color.Text">#FFF2F7FB</Color>
+      <Color x:Key="Win7.Color.TextMuted">#FFC7D1DA</Color>
+      <Color x:Key="Win7.Color.DisabledText">#FF8895A0</Color>
+      <Color x:Key="Win7.Color.ProgressFill">#FF86C341</Color>
+    </ResourceDictionary>
+  </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

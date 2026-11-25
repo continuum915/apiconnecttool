@@ -1,0 +1,11 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="RadioButton">
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}" />
+  </Style>
+  <Style Selector="RadioButton:pointerover">
+    <Setter Property="Foreground" Value="#FF003C74" />
+  </Style>
+  <Style Selector="RadioButton:disabled">
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.DisabledText}" />
+  </Style>
+</Styles>

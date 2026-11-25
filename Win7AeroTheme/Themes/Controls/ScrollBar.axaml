@@ -1,0 +1,9 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="ScrollBar">
+    <Setter Property="Background" Value="#FFE9F1F8" />
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.ControlFace}" />
+  </Style>
+  <Style Selector="ScrollBar:pointerover">
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.ControlFaceHover}" />
+  </Style>
+</Styles>

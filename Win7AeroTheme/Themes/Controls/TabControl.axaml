@@ -1,0 +1,17 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="TabControl">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.Surface}" />
+  </Style>
+  <Style Selector="TabItem">
+    <Setter Property="Padding" Value="10,4" />
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.ControlFace}" />
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}" />
+  </Style>
+  <Style Selector="TabItem:pointerover">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.ControlFaceHover}" />
+  </Style>
+  <Style Selector="TabItem:selected">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.Surface}" />
+    <Setter Property="Foreground" Value="#FF003C74" />
+  </Style>
+</Styles>

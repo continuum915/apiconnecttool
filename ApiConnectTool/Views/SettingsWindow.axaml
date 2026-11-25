@@ -1,0 +1,54 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ApiConnectTool.ViewModels"
+        xmlns:views="using:ApiConnectTool.Views"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="420" d:DesignHeight="460"
+        x:Class="ApiConnectTool.Views.SettingsWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="Preferences"
+        Width="420" Height="460"
+        MinWidth="360" MinHeight="440"
+        WindowStartupLocation="CenterOwner"
+        views:HelpContext.TopicId="preferences">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="*,Auto" Margin="20">
+        <StackPanel Grid.Row="0" Spacing="8">
+            <TextBlock Text="Appearance" FontWeight="SemiBold"/>
+            <ComboBox x:Name="ThemeSelector" SelectedIndex="{Binding Theme, Converter={StaticResource EnumIndexConverter}}"
+                      HorizontalAlignment="Stretch">
+                <ComboBoxItem Content="Dark"/>
+                <ComboBoxItem Content="Light (Avalonia)"/>
+                <ComboBoxItem Content="Win7 light"/>
+            </ComboBox>
+            <TextBlock Text="Changes apply immediately." Opacity="0.7" FontSize="{StaticResource FontSizeCaption}" Margin="0,0,0,12"/>
+
+            <TextBlock Text="Production send warning" FontWeight="SemiBold"/>
+            <TextBlock Text="Controls how often ApiConnectTool prompts for confirmation before sending against an environment marked as production."
+                       TextWrapping="Wrap" Opacity="0.7" FontSize="{StaticResource FontSizeCaption}"/>
+            <ComboBox SelectedIndex="{Binding ProductionWarningMode, Converter={StaticResource EnumIndexConverter}}"
+                      HorizontalAlignment="Stretch" Margin="0,4,0,0">
+                <ComboBoxItem Content="Always warn"/>
+                <ComboBoxItem Content="Warn once per session"/>
+                <ComboBoxItem Content="Never warn"/>
+            </ComboBox>
+
+            <TextBlock Text="Save Request As / Duplicate naming prompt" FontWeight="SemiBold" Margin="0,16,0,0"/>
+            <TextBlock Text="Controls whether ApiConnectTool asks you to name the copy when you use Save Request As or the sidebar's Duplicate action."
+                       TextWrapping="Wrap" Opacity="0.7" FontSize="{StaticResource FontSizeCaption}"/>
+            <CheckBox Content="Skip this prompt (always name copies &quot;Copy of &lt;original&gt;&quot;)"
+                      IsChecked="{Binding SkipSaveAsConfirmation}" Margin="0,4,0,0"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8"
+                    HorizontalAlignment="Right" Margin="0,16,0,0">
+            <Button Classes="accent btn-dialog" Content="Close" Click="OnCloseClick" IsDefault="True" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+
+</Window>

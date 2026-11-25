@@ -1,0 +1,60 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:ApiConnectTool.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="440" d:DesignHeight="340"
+        x:Class="ApiConnectTool.Views.SaveRequestAsWindow"
+        Title="{DynamicResource Str.SaveRequestAs.Title}"
+        Width="480" SizeToContent="Height"
+        CanResize="False"
+        WindowStartupLocation="CenterOwner">
+
+    <!-- Localization reference example: static strings below come from
+         {DynamicResource Str.*} (ApiConnectTool/Localization/Strings.en-US.axaml); the one string built at
+         runtime (SkipExplanationText, which interpolates the proposed copy name) is set in
+         code-behind via AppLocalization.Get(...) + string.Format instead of being hardcoded.
+         The first-save mode swaps Title/DescriptionText the same way, and hides the location
+         row (Duplicate) or the "don't show again" rows (first save) as the mode requires. -->
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" Margin="20">
+        <TextBlock Grid.Row="0" x:Name="DescriptionText"
+                    Text="{DynamicResource Str.SaveRequestAs.Description}"
+                    TextWrapping="Wrap"/>
+
+        <TextBox Grid.Row="1" x:Name="NameTextBox" Margin="0,12,0,0"/>
+
+        <StackPanel Grid.Row="2" x:Name="LocationPanel" Spacing="4" Margin="0,12,0,0">
+            <TextBlock Text="{DynamicResource Str.SaveRequestAs.Location}"
+                       FontSize="{StaticResource FontSizeCaption}" Opacity="0.7"/>
+            <!-- Same always-visible, indented list as MoveRequestWindow (see its comment). -->
+            <ListBox x:Name="LocationList" Height="200">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="vm:SaveDestination">
+                        <StackPanel Orientation="Horizontal" ToolTip.Tip="{Binding DisplayPath}">
+                            <Border Width="{Binding IndentWidth}"/>
+                            <TextBlock Text="{Binding Label}" FontWeight="SemiBold"
+                                       IsVisible="{Binding IsCollection}"/>
+                            <TextBlock Text="{Binding Label}"
+                                       IsVisible="{Binding !IsCollection}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+
+        <CheckBox Grid.Row="3" x:Name="DontShowAgainCheckBox"
+                    Content="{DynamicResource Str.SaveRequestAs.DontShowAgain}"
+                    Margin="0,16,0,0"/>
+
+        <TextBlock Grid.Row="4" x:Name="SkipExplanationText"
+                    TextWrapping="Wrap" Opacity="0.7" FontSize="{StaticResource FontSizeCaption}"
+                    Margin="24,4,0,0"/>
+
+        <StackPanel Grid.Row="5" Orientation="Horizontal" Spacing="8"
+                    HorizontalAlignment="Right" Margin="0,20,0,0">
+            <Button x:Name="CancelButton" Classes="btn-dialog" Content="{DynamicResource Str.Dialog.Cancel}" IsCancel="True"/>
+            <Button x:Name="SaveButton" Classes="accent btn-dialog" Content="{DynamicResource Str.Dialog.Save}" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+
+</Window>

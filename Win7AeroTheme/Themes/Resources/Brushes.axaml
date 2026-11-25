@@ -1,0 +1,39 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <SolidColorBrush x:Key="Win7.Brush.WindowBackground" Color="{DynamicResource Win7.Color.WindowBackground}" />
+  <SolidColorBrush x:Key="Win7.Brush.Surface" Color="{DynamicResource Win7.Color.Surface}" />
+  <SolidColorBrush x:Key="Win7.Brush.ControlBorder" Color="{DynamicResource Win7.Color.ControlBorder}" />
+  <SolidColorBrush x:Key="Win7.Brush.ControlBorderDark" Color="{DynamicResource Win7.Color.ControlBorderDark}" />
+  <SolidColorBrush x:Key="Win7.Brush.FocusGlow" Color="{DynamicResource Win7.Color.FocusGlow}" />
+  <SolidColorBrush x:Key="Win7.Brush.Selection" Color="{DynamicResource Win7.Color.Selection}" />
+  <SolidColorBrush x:Key="Win7.Brush.OnAccent" Color="{DynamicResource Win7.Color.OnAccent}" />
+  <SolidColorBrush x:Key="Win7.Brush.Text" Color="{DynamicResource Win7.Color.Text}" />
+  <SolidColorBrush x:Key="Win7.Brush.TextMuted" Color="{DynamicResource Win7.Color.TextMuted}" />
+  <SolidColorBrush x:Key="Win7.Brush.DisabledText" Color="{DynamicResource Win7.Color.DisabledText}" />
+  <SolidColorBrush x:Key="Win7.Brush.ProgressFill" Color="{DynamicResource Win7.Color.ProgressFill}" />
+
+  <LinearGradientBrush x:Key="Win7.Brush.ControlFace" StartPoint="0%,0%" EndPoint="0%,100%">
+    <GradientStop Offset="0" Color="#FFFFFFFF" />
+    <GradientStop Offset="0.42" Color="#FFF7FBFF" />
+    <GradientStop Offset="0.48" Color="{DynamicResource Win7.Color.ControlFace}" />
+    <GradientStop Offset="1" Color="#FFD5E7F7" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="Win7.Brush.ControlFaceHover" StartPoint="0%,0%" EndPoint="0%,100%">
+    <GradientStop Offset="0" Color="#FFFFFFFF" />
+    <GradientStop Offset="0.45" Color="#FFE8F6FF" />
+    <GradientStop Offset="0.52" Color="{DynamicResource Win7.Color.ControlFaceHover}" />
+    <GradientStop Offset="1" Color="#FFB9DEF6" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="Win7.Brush.ControlFacePressed" StartPoint="0%,0%" EndPoint="0%,100%">
+    <GradientStop Offset="0" Color="#FFC8DDF0" />
+    <GradientStop Offset="0.5" Color="{DynamicResource Win7.Color.ControlFacePressed}" />
+    <GradientStop Offset="1" Color="#FFE9F5FC" />
+  </LinearGradientBrush>
+
+  <LinearGradientBrush x:Key="Win7.Brush.PanelChrome" StartPoint="0%,0%" EndPoint="0%,100%">
+    <GradientStop Offset="0" Color="#FFFFFFFF" />
+    <GradientStop Offset="1" Color="#FFE7F1F9" />
+  </LinearGradientBrush>
+</ResourceDictionary>

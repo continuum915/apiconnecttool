@@ -1,0 +1,9 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="Slider">
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.FocusGlow}" />
+    <Setter Property="Background" Value="#FFD7E4EF" />
+  </Style>
+  <Style Selector="Slider:disabled">
+    <Setter Property="Opacity" Value="0.65" />
+  </Style>
+</Styles>

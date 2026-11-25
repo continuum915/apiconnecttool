@@ -1,0 +1,19 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="ToggleButton">
+    <Setter Property="MinHeight" Value="{DynamicResource Win7.Size.ControlMinHeight}" />
+    <Setter Property="Padding" Value="{DynamicResource Win7.Thickness.ControlPadding}" />
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.ControlFace}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.ControlBorder}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{DynamicResource Win7.CornerRadius.Control}" />
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}" />
+  </Style>
+  <Style Selector="ToggleButton:pointerover">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.ControlFaceHover}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.FocusGlow}" />
+  </Style>
+  <Style Selector="ToggleButton:checked">
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.ControlFacePressed}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.ControlBorderDark}" />
+  </Style>
+</Styles>

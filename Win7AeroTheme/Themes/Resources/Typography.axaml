@@ -1,0 +1,7 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <FontFamily x:Key="Win7.FontFamily.UI">Segoe UI, Arial, sans-serif</FontFamily>
+  <x:Double x:Key="Win7.FontSize.Body">12</x:Double>
+  <x:Double x:Key="Win7.FontSize.Small">11</x:Double>
+  <x:Double x:Key="Win7.FontSize.Heading">16</x:Double>
+</ResourceDictionary>

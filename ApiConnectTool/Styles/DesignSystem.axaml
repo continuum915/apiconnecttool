@@ -1,0 +1,245 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        Shared spacing/typography tokens and button conventions.
+
+        The TabItem rule at the bottom applies everywhere, so both
+        TabControls pick it up with no per-file edit.
+    -->
+
+    <Styles.Resources>
+        <ResourceDictionary>
+
+            <!-- Spacing scale: 4 / 8 / 12 / 16 / 24. Use for Margin/Spacing/
+                 Padding wherever a screen is being touched by a later
+                 milestone - do not introduce a sixth value without updating
+                 this comment and the plan doc. -->
+            <x:Double x:Key="SpacingXS">4</x:Double>
+            <x:Double x:Key="SpacingS">8</x:Double>
+            <x:Double x:Key="SpacingM">12</x:Double>
+            <x:Double x:Key="SpacingL">16</x:Double>
+            <x:Double x:Key="SpacingXL">24</x:Double>
+
+            <!-- Typography scale. Caption = the smallest metadata text
+                 (timestamps, status subtext); Body = default control/text
+                 size; Subheading = tab labels and small section headers;
+                 Heading = section emphasis; Title = top-level article titles. -->
+            <x:Double x:Key="FontSizeCaption">11</x:Double>
+            <x:Double x:Key="FontSizeBody">12</x:Double>
+            <x:Double x:Key="FontSizeSubheading">13</x:Double>
+            <x:Double x:Key="FontSizeHeading">15</x:Double>
+            <x:Double x:Key="FontSizeTitle">18</x:Double>
+
+            <FontFamily x:Key="ApiConnectTool.FontFamily.Monospace">Cascadia Mono, Consolas, Courier New, monospace</FontFamily>
+
+            <ResourceDictionary.ThemeDictionaries>
+                <ResourceDictionary x:Key="Light">
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.WindowBackground" Color="#FFE8EAED"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Surface" Color="#FFFFFFFF"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Chrome" Color="#FFF3F4F6"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.StatusBar" Color="#FFE1E4E8"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Pane" Color="#FFF4F5F7"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Input" Color="#FFFFFFFF"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Border" Color="#FFBFC4CB"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.BorderSubtle" Color="#FFDDE0E5"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Grip" Color="#FF9AA1AB"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Text" Color="#FF1D2126"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.TextMuted" Color="#FF535B67"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Hover" Color="#FFE4E7EB"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Selection" Color="#FFCFE0F7"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.SelectionText" Color="#FF0F2340"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.GridHeader" Color="#FFEEF0F3"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.GridAlternateRow" Color="#FFF8F9FB"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.InactiveTab" Color="#FFDFE2E6"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Accent" Color="#FF1F5FBF"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.AccentBorder" Color="#FF174C9A"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.OnAccent" Color="#FFFFFFFF"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.AccentText" Color="#FF1F5FBF"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Success" Color="#FF1C6E2F"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.SuccessBackground" Color="#FFE2F2E6"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.SuccessBorder" Color="#FFA8D5B3"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.SuccessFill" Color="#FF4E9F62"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Danger" Color="#FFB3261E"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.DangerBackground" Color="#FFFBEAE8"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.DangerBorder" Color="#FFEBB8B3"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.DangerText" Color="#FF7D1A14"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.DangerFill" Color="#FFC9483F"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.OnDanger" Color="#FFFFFFFF"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Warning" Color="#FFD08A12"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.WarningText" Color="#FF7A4D00"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.WarningBackground" Color="#FFFDF4E0"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.OnWarning" Color="#FF2A1C00"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Info" Color="#FF1F5FBF"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.OverrideBackground" Color="#FFFFF6E0"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Variable" Color="#FF9A4F00"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Script" Color="#FF7A3FB0"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Code.Background" Color="#FFFFFFFF"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Code.Gutter" Color="#FFF1F2F4"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Code.GutterText" Color="#FF5A6270"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Syntax.Key" Color="#FF7A2E9E"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Syntax.String" Color="#FF1C7431"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Syntax.Number" Color="#FF1F5FBF"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Syntax.Literal" Color="#FFB3261E"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Syntax.Comment" Color="#FF5F6773"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Get" Color="#FF1C7431"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Post" Color="#FFA35200"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Put" Color="#FF1F5FBF"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Patch" Color="#FF7A3FB0"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Delete" Color="#FFB3261E"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Other" Color="#FF535B67"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Icon.FolderFill" Color="#FFF1C75B"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Icon.FolderStroke" Color="#FFB8892A"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Icon.CollectionFill" Color="#FFE3ECF8"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Icon.CollectionStroke" Color="#FF4A78B8"/>
+                    <!-- Fluent accent follows ApiConnectTool.Brush.Accent so stock controls match. -->
+                    <Color x:Key="SystemAccentColor">#FF1F5FBF</Color>
+                    <Color x:Key="SystemAccentColorDark1">#FF1F5FBF</Color>
+                    <Color x:Key="SystemAccentColorDark2">#FF174C9A</Color>
+                    <Color x:Key="SystemAccentColorDark3">#FF174C9A</Color>
+                    <Color x:Key="SystemAccentColorLight1">#FF1F5FBF</Color>
+                    <Color x:Key="SystemAccentColorLight2">#FF1F5FBF</Color>
+                    <Color x:Key="SystemAccentColorLight3">#FF1F5FBF</Color>
+                </ResourceDictionary>
+                <ResourceDictionary x:Key="Dark">
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.WindowBackground" Color="#FF2B2D31"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Surface" Color="#FF1E1F22"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Chrome" Color="#FF2F3135"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.StatusBar" Color="#FF26282B"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Pane" Color="#FF25272A"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Input" Color="#FF18191B"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Border" Color="#FF4A4D53"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.BorderSubtle" Color="#FF36393E"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Grip" Color="#FF6B7079"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Text" Color="#FFDFE2E7"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.TextMuted" Color="#FFA2A8B1"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Hover" Color="#FF34363B"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Selection" Color="#FF2D4672"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.SelectionText" Color="#FFF3F6FB"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.GridHeader" Color="#FF2A2C30"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.GridAlternateRow" Color="#FF232427"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.InactiveTab" Color="#FF26282C"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Accent" Color="#FF4C8FE6"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.AccentBorder" Color="#FF6AA3EE"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.OnAccent" Color="#FF0C1626"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.AccentText" Color="#FF7DB6F4"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Success" Color="#FF7FCB8D"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.SuccessBackground" Color="#FF1E3626"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.SuccessBorder" Color="#FF2F5A3B"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.SuccessFill" Color="#FF3F8A52"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Danger" Color="#FFF2867A"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.DangerBackground" Color="#FF3A2423"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.DangerBorder" Color="#FF5E3330"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.DangerText" Color="#FFF6C3BC"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.DangerFill" Color="#FFB4453C"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.OnDanger" Color="#FF2A0C09"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Warning" Color="#FFE0A63C"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.WarningText" Color="#FFEBC37A"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.WarningBackground" Color="#FF352C1A"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.OnWarning" Color="#FF241700"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Info" Color="#FF7DB6F4"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.OverrideBackground" Color="#FF33291A"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Variable" Color="#FFE8B86A"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Script" Color="#FFC19AF0"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Code.Background" Color="#FF1B1C1F"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Code.Gutter" Color="#FF222326"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Code.GutterText" Color="#FF878D96"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Syntax.Key" Color="#FFCC99EE"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Syntax.String" Color="#FF8FCF92"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Syntax.Number" Color="#FF7DB6F4"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Syntax.Literal" Color="#FFF2937D"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Syntax.Comment" Color="#FF8C929B"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Get" Color="#FF74C784"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Post" Color="#FFEBA75A"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Put" Color="#FF7DB6F4"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Patch" Color="#FFC19AF0"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Delete" Color="#FFF2867A"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Method.Other" Color="#FFA2A8B1"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Icon.FolderFill" Color="#FFC9A043"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Icon.FolderStroke" Color="#FF8F7128"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Icon.CollectionFill" Color="#FF2A3B55"/>
+                    <SolidColorBrush x:Key="ApiConnectTool.Brush.Icon.CollectionStroke" Color="#FF6FA0E0"/>
+                    <!-- Fluent accent follows ApiConnectTool.Brush.Accent so stock controls match. -->
+                    <Color x:Key="SystemAccentColor">#FF4C8FE6</Color>
+                    <Color x:Key="SystemAccentColorDark1">#FF4C8FE6</Color>
+                    <Color x:Key="SystemAccentColorDark2">#FF4C8FE6</Color>
+                    <Color x:Key="SystemAccentColorDark3">#FF4C8FE6</Color>
+                    <Color x:Key="SystemAccentColorLight1">#FF4C8FE6</Color>
+                    <Color x:Key="SystemAccentColorLight2">#FF4C8FE6</Color>
+                    <Color x:Key="SystemAccentColorLight3">#FF6AA3EE</Color>
+                </ResourceDictionary>
+            </ResourceDictionary.ThemeDictionaries>
+        </ResourceDictionary>
+    </Styles.Resources>
+
+    <!--
+        Button conventions (design system):
+          - Primary action: Classes="accent" (Fluent's built-in accent style -
+            already the pattern for Send/Import/Send Anyway; keep using it,
+            don't reinvent it).
+          - Secondary/destructive action: no class, default Button style.
+          - Compact action (row-level buttons inside a list item, e.g. a
+            future collection/request row's Actions trigger): Classes="btn-compact".
+          - Menu trigger (a button that opens a MenuFlyout of further
+            actions, e.g. a future "Import" or "Actions" button):
+            Classes="btn-menu".
+          No icon-only buttons: every button styled with these classes is
+          expected to carry a short text label, per the plan's chosen icon
+          strategy - these style rules deliberately don't touch Content.
+    -->
+    <Style Selector="Button.btn-compact">
+        <Setter Property="Padding" Value="6,2"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}"/>
+    </Style>
+
+    <Style Selector="Button.btn-default">
+        <Setter Property="Padding" Value="10,4"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+    </Style>
+
+    <Style Selector="Button.btn-menu">
+        <Setter Property="Padding" Value="10,4"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+    </Style>
+
+    <!-- Dialog action (a modal window's bottom-row Cancel/Confirm buttons - e.g.
+         ProductionSendConfirmationWindow, CurlImportWindow). Added in 4.5e:
+         three of the four dialogs had already independently landed on the
+         same 14,6 padding by coincidence: promoted to a real shared class
+         so it's consistency by construction, not by accident. -->
+    <Style Selector="Button.btn-dialog">
+        <Setter Property="Padding" Value="14,6"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+    </Style>
+
+    <!--
+        Fixes a tab-strip typography mismatch:
+        RequestEditorControl's and ResponseViewerControl's TabControls never
+        set FontSize on TabItem, so they fell back to Fluent's larger
+        default next to everything else in the app, which is hand-sized to
+        the scale above. This is the one rule in this file that applies
+        immediately, everywhere, with no other file needing to change.
+    -->
+    <!-- Classic grids: grid-line, header and alternate-row tokens for every DataGrid. -->
+    <Style Selector="DataGrid">
+        <Setter Property="HorizontalGridLinesBrush" Value="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+        <Setter Property="VerticalGridLinesBrush" Value="{DynamicResource ApiConnectTool.Brush.BorderSubtle}"/>
+        <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.Surface}"/>
+        <Setter Property="RowBackground" Value="{DynamicResource ApiConnectTool.Brush.Surface}"/>
+        <Setter Property="GridLinesVisibility" Value="All"/>
+    </Style>
+    <Style Selector="DataGridRow:nth-child(2n)">
+        <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.GridAlternateRow}"/>
+    </Style>
+    <Style Selector="DataGridColumnHeader">
+        <Setter Property="Background" Value="{DynamicResource ApiConnectTool.Brush.GridHeader}"/>
+        <Setter Property="Foreground" Value="{DynamicResource ApiConnectTool.Brush.Text}"/>
+        <Setter Property="FontSize" Value="{StaticResource FontSizeBody}"/>
+    </Style>
+
+    <Style Selector="TabItem">
+        <Setter Property="FontSize" Value="{StaticResource FontSizeSubheading}"/>
+        <Setter Property="Padding" Value="12,8"/>
+    </Style>
+
+</Styles>

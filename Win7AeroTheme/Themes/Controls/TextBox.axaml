@@ -1,0 +1,22 @@
+<Styles xmlns="https://github.com/avaloniaui">
+  <Style Selector="TextBox">
+    <Setter Property="MinHeight" Value="{DynamicResource Win7.Size.ControlMinHeight}" />
+    <Setter Property="Padding" Value="{DynamicResource Win7.Thickness.InputPadding}" />
+    <Setter Property="Background" Value="{DynamicResource Win7.Brush.Surface}" />
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.ControlBorder}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{DynamicResource Win7.CornerRadius.Control}" />
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}" />
+    <Setter Property="SelectionBrush" Value="{DynamicResource Win7.Brush.Selection}" />
+  </Style>
+  <Style Selector="TextBox:pointerover">
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.ControlBorderDark}" />
+  </Style>
+  <Style Selector="TextBox:focus">
+    <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.FocusGlow}" />
+  </Style>
+  <Style Selector="TextBox:disabled">
+    <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.DisabledText}" />
+    <Setter Property="Opacity" Value="0.72" />
+  </Style>
+</Styles>

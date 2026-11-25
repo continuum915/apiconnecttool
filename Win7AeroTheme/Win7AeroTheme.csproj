@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>Win7AeroTheme</PackageId>
+    <Title>Win7 Aero Theme for Avalonia</Title>
+    <Description>A Windows 7 Aero-inspired Avalonia theme package built with original resources and native window chrome.</Description>
+    <Authors>Win7AeroTheme contributors</Authors>
+    <PackageTags>avalonia;theme;aero;windows7;xaml</PackageTags>
+    <RepositoryType>git</RepositoryType>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Controls.DataGrid" Version="12.1.0" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.0" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,44 @@
+<Styles xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Styles.Resources>
+        <ResourceDictionary>
+            <!-- ApiConnectTool semantic chrome tokens backed by the active theme palette. -->
+            <SolidColorBrush x:Key="ApiConnectTool.Brush.WindowBackground" Color="{DynamicResource Win7.Color.WindowBackground}"/>
+            <SolidColorBrush x:Key="ApiConnectTool.Brush.Surface" Color="{DynamicResource Win7.Color.Surface}"/>
+            <SolidColorBrush x:Key="ApiConnectTool.Brush.Chrome" Color="{DynamicResource Win7.Color.ControlFace}"/>
+            <SolidColorBrush x:Key="ApiConnectTool.Brush.Border" Color="{DynamicResource Win7.Color.ControlBorder}"/>
+            <SolidColorBrush x:Key="ApiConnectTool.Brush.BorderSubtle" Color="{DynamicResource Win7.Color.ControlBorder}" Opacity="0.65"/>
+            <SolidColorBrush x:Key="ApiConnectTool.Brush.TextMuted" Color="{DynamicResource Win7.Color.TextMuted}"/>
+            <SolidColorBrush x:Key="ApiConnectTool.Brush.AccentText" Color="{DynamicResource Win7.Color.ControlBorderDark}"/>
+            <SolidColorBrush x:Key="ApiConnectTool.Brush.Selection" Color="{DynamicResource Win7.Color.Selection}"/>
+
+            <SolidColorBrush x:Key="ApiConnectTool.Brush.Text" Color="{DynamicResource Win7.Color.Text}"/>
+            <SolidColorBrush x:Key="ApiConnectTool.Brush.Hover" Color="{DynamicResource Win7.Color.ControlFaceHover}"/>
+        </ResourceDictionary>
+    </Styles.Resources>
+    <!-- Keep ApiConnectTool's primary actions in the Aero palette instead of allowing Fluent's accent
+         template to reintroduce a separate visual language. -->
+    <Style Selector="Button.accent">
+        <Setter Property="Background" Value="{DynamicResource Win7.Brush.Selection}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.FocusGlow}"/>
+        <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.OnAccent}"/>
+    </Style>
+
+    <Style Selector="Button.accent:pointerover">
+        <Setter Property="Background" Value="{DynamicResource Win7.Brush.FocusGlow}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.ControlBorderDark}"/>
+    </Style>
+
+    <Style Selector="Button.accent:pressed">
+        <Setter Property="Background" Value="{DynamicResource Win7.Brush.ControlBorderDark}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource Win7.Brush.ControlBorderDark}"/>
+    </Style>
+
+    <!-- Expander is intentionally not restyled by the imported theme. This small rule keeps
+         collection headers aligned with ApiConnectTool's typography while Fluent supplies its disclosure
+         template and keyboard behavior. -->
+    <Style Selector="Expander">
+        <Setter Property="Foreground" Value="{DynamicResource Win7.Brush.Text}"/>
+        <Setter Property="FontFamily" Value="{DynamicResource Win7.FontFamily.UI}"/>
+    </Style>
+
+</Styles>

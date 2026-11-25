@@ -1,0 +1,74 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ApiConnectTool.ViewModels"
+        xmlns:help="using:ApiConnectTool.Help"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="860" d:DesignHeight="620"
+        x:Class="ApiConnectTool.Views.HelpWindow"
+        x:DataType="vm:HelpViewModel"
+        Title="{DynamicResource Str.Help.WindowTitle}"
+        Width="860" Height="620"
+        MinWidth="640" MinHeight="420"
+        Background="{DynamicResource ApiConnectTool.Brush.WindowBackground}"
+        WindowStartupLocation="CenterOwner">
+
+    <Design.DataContext>
+        <vm:HelpViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,*">
+        <Border Grid.Row="0"
+                Background="{DynamicResource ApiConnectTool.Brush.Chrome}"
+                BorderBrush="{DynamicResource ApiConnectTool.Brush.Border}"
+                BorderThickness="0,0,0,1"
+                Padding="12,8">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button x:Name="BackButton"
+                        Classes="btn-default"
+                        Content="{DynamicResource Str.Help.Back}"
+                        IsEnabled="{Binding CanGoBack}"
+                        Command="{Binding BackCommand}"/>
+                <Button x:Name="ForwardButton"
+                        Classes="btn-default"
+                        Content="{DynamicResource Str.Help.Forward}"
+                        IsEnabled="{Binding CanGoForward}"
+                        Command="{Binding ForwardCommand}"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Row="1" ColumnDefinitions="220,1,*">
+            <Border Grid.Column="0"
+                    Background="{DynamicResource ApiConnectTool.Brush.Surface}"
+                    Padding="8">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top"
+                               Text="{DynamicResource Str.Help.TopicsHeader}"
+                               FontWeight="SemiBold"
+                               FontSize="{StaticResource FontSizeSubheading}"
+                               Foreground="{DynamicResource ApiConnectTool.Brush.Text}"
+                               Margin="4,4,4,8"/>
+                    <ListBox x:Name="TopicsListBox"
+                             ItemsSource="{Binding Topics}"
+                             SelectedItem="{Binding SelectedTopic, Mode=TwoWay}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="help:HelpTopic">
+                                <TextBlock Text="{Binding Title}" TextWrapping="Wrap"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Column="1"
+                    Background="{DynamicResource ApiConnectTool.Brush.Border}"/>
+
+            <ScrollViewer x:Name="ArticleScrollViewer"
+                          Grid.Column="2"
+                          Background="{DynamicResource ApiConnectTool.Brush.Surface}"
+                          Padding="24,16">
+                <ContentControl x:Name="ArticleHost"/>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>

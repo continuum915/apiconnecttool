@@ -1,0 +1,15 @@
+<Window xmlns="https://github.com/avaloniaui" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:ApiConnectTool.ViewModels" xmlns:components="using:ApiConnectTool.Views.Components"
+        xmlns:views="using:ApiConnectTool.Views"
+        x:Class="ApiConnectTool.Views.CollectionSettingsWindow" x:DataType="vm:CollectionSettingsViewModel"
+        Title="{DynamicResource Str.Collection.Settings}" Width="820" Height="540" MinWidth="600" MinHeight="380"
+        views:HelpContext.TopicId="authorization">
+    <TabControl Margin="12">
+        <TabItem Header="{DynamicResource Str.Variables.Title}">
+            <components:VariableEditorControl DataContext="{Binding VariableEditor}" Margin="8"/>
+        </TabItem>
+        <TabItem Header="{DynamicResource Str.Auth.Title}">
+            <components:AuthEditorControl DataContext="{Binding AuthEditor}"/>
+        </TabItem>
+    </TabControl>
+</Window>
