@@ -13,7 +13,7 @@ The navigator on the left has two tabs: **Collections** and **History**.
 Collections show as a tree. Each collection and folder has an icon, and each request shows its method in a colored column. Click a request, or select it and press Enter, to open it in a tab.
 
 1. Choose **File > New Collection** and give the collection a name.
-2. Right-click the collection and choose **Add Folder** to organize requests. Imported collections can also contain nested folders.
+2. Right-click the collection and choose **Add Folder** to organize requests. A new folder or collection starts with its name selected, ready to type over. Right-click a folder and choose **Add Request** to add a request straight into it. Imported collections can also contain nested folders.
 3. Open a request and use **File > Save Request As** to select the destination collection or folder.
 4. Right-click a request and choose **Move to...** to move it, or **Move Up** and **Move Down** to change its order.
 5. Use **Rename**, **Duplicate** or **Delete** from the right-click menu. Deletion asks for confirmation and removes the contained requests.
@@ -21,7 +21,7 @@ Collections show as a tree. Each collection and folder has an icon, and each req
 Every row has a context menu. Open it by right-clicking the row, or by selecting the row and pressing Shift+F10 or the Menu key. The selected collection is also the target of the **Collection** menu on the menu bar.
 
 - **Collection:** Add Request, Add Folder, Rename, Duplicate, Run Collection, Environments, Collection Settings, Export, Export as Postman, Delete.
-- **Folder:** Rename, Run Folder, Folder Settings, Delete.
+- **Folder:** Add Request, Rename, Run Folder, Folder Settings, Delete.
 - **Request:** Open, Rename, Duplicate, Move to, Move Up, Move Down, Delete.
 
 With a row selected, F2 renames it in place (Enter keeps the new name, Escape restores the old one) and Delete deletes it after confirmation.

@@ -85,7 +85,20 @@ public sealed partial class AppCommandsViewModel : ObservableObject
     private bool HasRunTarget() => RunTarget is not null;
 
     [RelayCommand(CanExecute = nameof(HasCollection))]
-    private void AddRequest() => _main.CollectionsPanel.AddRequestCommand.Execute(SelectedCollection);
+    private void AddRequest()
+    {
+        // Add next to what is selected: inside the selected folder, or the folder of the selected request.
+        var folderId = _main.CollectionsPanel.SelectedNode switch
+        {
+            FolderTreeNode node => node.Folder.Id,
+            RequestItem request => request.FolderId,
+            _ => null
+        };
+        if (folderId is { } id && SelectedCollection?.Folders.FirstOrDefault(folder => folder.Id == id) is { } target)
+            _main.CollectionsPanel.AddRequestToFolderCommand.Execute(target);
+        else
+            _main.CollectionsPanel.AddRequestCommand.Execute(SelectedCollection);
+    }
 
     [RelayCommand(CanExecute = nameof(HasCollection))]
     private void AddFolder() => _main.CollectionsPanel.AddFolderCommand.Execute(SelectedCollection);
