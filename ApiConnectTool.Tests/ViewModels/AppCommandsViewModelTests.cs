@@ -91,6 +91,25 @@ public class AppCommandsViewModelTests
     }
 
     [Fact]
+    public void AddRequest_GoesIntoTheSelectedFolderOrTheSelectedRequestsFolder()
+    {
+        var folderNode = Node(_orders).Folders.Single();
+
+        _vm.CollectionsPanel.SelectedNode = folderNode;
+        Commands.AddRequestCommand.Execute(null);
+        _vm.CollectionsPanel.SelectedNode = _folderRequest;
+        Commands.AddRequestCommand.Execute(null);
+        _vm.CollectionsPanel.SelectedNode = _rootRequest;
+        Commands.AddRequestCommand.Execute(null);
+
+        var added = _orders.Requests.Where(request => request.Name.StartsWith("New Request")).ToList();
+        Assert.Equal(3, added.Count);
+        Assert.Equal(_folder.Id, added[0].FolderId);
+        Assert.Equal(_folder.Id, added[1].FolderId);
+        Assert.Null(added[2].FolderId);
+    }
+
+    [Fact]
     public void CollectionCommands_ReachTheSameOperationsAsTheRowActions()
     {
         _vm.CollectionsPanel.SelectedNode = Node(_billing);

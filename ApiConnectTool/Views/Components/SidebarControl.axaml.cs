@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Threading;
 using Avalonia.VisualTree;
 using ApiConnectTool.Models;
 using ApiConnectTool.Services.Localization;
@@ -21,9 +23,13 @@ namespace ApiConnectTool.Views.Components
             InitializeComponent();
             DataContextChanged += (_, _) =>
             {
+                if (_subscribedPanel is { } previous) previous.NodeAdded -= RevealNode;
+                _subscribedPanel = null;
                 if (DataContext is MainWindowViewModel viewModel)
                 {
                     viewModel.CollectionsPanel.DeleteConfirmationHandler = ConfirmDeleteAsync;
+                    _subscribedPanel = viewModel.CollectionsPanel;
+                    _subscribedPanel.NodeAdded += RevealNode;
                 }
             };
             NavigatorTree.AddHandler(KeyDownEvent, OnTreeKeyDown, RoutingStrategies.Tunnel);
@@ -31,7 +37,50 @@ namespace ApiConnectTool.Views.Components
             SearchResultsList.AddHandler(KeyDownEvent, OnSearchResultKeyDown, RoutingStrategies.Tunnel);
         }
 
+        private CollectionsViewModel? _subscribedPanel;
+
         private MainWindowViewModel? ViewModel => DataContext as MainWindowViewModel;
+
+        /// <summary>Expands the ancestors of a newly added node, then selects it and scrolls it into
+        /// view. Deferred so the tree has realized the new node's container first.</summary>
+        private void RevealNode(IReadOnlyList<object> path)
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                for (var i = 0; i < path.Count - 1; i++)
+                {
+                    if (NavigatorTree.TreeContainerFromItem(path[i]) is TreeViewItem ancestor)
+                    {
+                        ancestor.IsExpanded = true;
+                        NavigatorTree.UpdateLayout();
+                    }
+                }
+
+                if (Panel is { } panel) panel.SelectedNode = path[^1];
+                if (NavigatorTree.TreeContainerFromItem(path[^1]) is TreeViewItem item) item.BringIntoView();
+            }, DispatcherPriority.Loaded);
+        }
+
+        // A rename box takes focus with its text selected as soon as it shows, whether rename was
+        // started from a menu, F2, or by creating a collection or folder. Posted at Background so it
+        // runs after a closing context menu hands focus back to the tree.
+
+        private void OnRenameBoxAttached(object? sender, VisualTreeAttachmentEventArgs e)
+        {
+            if (sender is TextBox { IsVisible: true } box) FocusRenameBox(box);
+        }
+
+        private void OnRenameBoxPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+        {
+            if (e.Property == IsVisibleProperty && e.NewValue is true && sender is TextBox box) FocusRenameBox(box);
+        }
+
+        private static void FocusRenameBox(TextBox box) => Dispatcher.UIThread.Post(() =>
+        {
+            if (!box.IsEffectivelyVisible) return;
+            box.Focus();
+            box.SelectAll();
+        }, DispatcherPriority.Background);
         private CollectionsViewModel? Panel => ViewModel?.CollectionsPanel;
         private IAppDialogs? Dialogs => ViewModel?.Commands.Dialogs ?? TopLevel.GetTopLevel(this) as IAppDialogs;
 
@@ -159,6 +208,11 @@ namespace ApiConnectTool.Views.Components
         }
 
         // Folder context menu
+
+        private void OnAddRequestToFolderClick(object? sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem { Tag: CollectionFolder folder }) Panel?.AddRequestToFolderCommand.Execute(folder);
+        }
 
         private void OnRenameFolderClick(object? sender, RoutedEventArgs e)
         {

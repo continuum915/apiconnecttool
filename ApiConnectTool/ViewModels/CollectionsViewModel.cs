@@ -40,6 +40,10 @@ public partial class CollectionsViewModel : ObservableObject
     public ObservableCollection<RequestItem> SearchResults { get; } = new();
     public bool IsSearchActive => !string.IsNullOrWhiteSpace(SearchText);
 
+    /// <summary>Raised with the tree path (root first, the new node last) of a node just added
+    /// from the sidebar or menus, so the view can expand its ancestors, select it and scroll to it.</summary>
+    public event Action<IReadOnlyList<object>>? NodeAdded;
+
     /// <param name="collections">The workspace's collection list, used (and mutated) in place.</param>
     /// <param name="persist">Saves the workspace; returns false when the write failed.</param>
     /// <param name="openRequest">Opens (or activates) a tab for a request.</param>
@@ -335,8 +339,11 @@ public partial class CollectionsViewModel : ObservableObject
     [RelayCommand]
     private void AddCollection()
     {
-        Collections.Add(new RequestCollection { Name = NextName(Collections.Select(collection => collection.Name), "New Collection") });
+        var collection = new RequestCollection { Name = NextName(Collections.Select(existing => existing.Name), "New Collection") };
+        Collections.Add(collection);
         Commit();
+        BeginRename(collection);
+        RaiseNodeAdded(collection);
     }
 
     [RelayCommand]
@@ -364,8 +371,46 @@ public partial class CollectionsViewModel : ObservableObject
         var item = new RequestItem { Name = NextRequestName(collection, "New Request"), SortOrder = collection.Requests.Count };
         collection.Requests.Add(item);
         Commit();
+        RaiseNodeAdded(item);
         _openRequest(item);
     }
+
+    /// <summary>Adds a new request inside <paramref name="folder"/>, after its existing requests.</summary>
+    [RelayCommand]
+    private void AddRequestToFolder(CollectionFolder? folder)
+    {
+        var collection = folder is null ? null : Collections.FirstOrDefault(candidate => candidate.Folders.Contains(folder));
+        if (folder is null || collection is null)
+        {
+            return;
+        }
+
+        var item = new RequestItem
+        {
+            Name = NextRequestName(collection, "New Request"),
+            FolderId = folder.Id,
+            SortOrder = collection.Requests.Count(request => request.FolderId == folder.Id)
+        };
+        collection.Requests.Add(item);
+        Commit();
+        RaiseNodeAdded(item);
+        _openRequest(item);
+    }
+
+    private static void BeginRename(IRenamable item)
+    {
+        item.RenameOriginalName = item.Name;
+        item.IsEditing = true;
+    }
+
+    private void RaiseNodeAdded(object model)
+    {
+        if (NodeAdded is { } handler && PathTo(model) is { } path) handler(path);
+    }
+
+    /// <summary>The tree nodes from a collection node down to the node showing
+    /// <paramref name="model"/> (a RequestCollection, CollectionFolder or RequestItem), or null.</summary>
+    public IReadOnlyList<object>? PathTo(object model) => NavigatorTreeSync.PathTo(Tree, model);
 
     [RelayCommand]
     private async Task DeleteRequestAsync(RequestItem? request)
@@ -464,6 +509,8 @@ public partial class CollectionsViewModel : ObservableObject
         };
         collection.Folders.Add(folder);
         Commit();
+        BeginRename(folder);
+        RaiseNodeAdded(folder);
     }
 
     [RelayCommand]
@@ -654,7 +701,7 @@ public partial class CollectionsViewModel : ObservableObject
     /// TextBox that was still mid-dispatch of its own KeyDown event.</summary>
     private void RefreshTree()
     {
-        SyncByKey(Tree, Collections,
+        NavigatorTreeSync.SyncByKey(Tree, Collections,
             collection => collection.Id,
             node => node.Collection.Id,
             collection => new CollectionTreeNode(collection));
@@ -676,82 +723,20 @@ public partial class CollectionsViewModel : ObservableObject
         // Requests are their own sidebar nodes, and a save replaces the RequestItem instance
         // under the same Id - so match on identity too, or the row keeps the pre-save object and
         // reopening it shows the old version.
-        SyncByKey(requestsNode,
+        NavigatorTreeSync.SyncByKey(requestsNode,
             collection.Requests.Where(request => request.FolderId == parentFolderId).OrderBy(request => request.SortOrder).ToList(),
             request => request.Id, request => request.Id, request => request,
             isCurrent: (node, request) => ReferenceEquals(node, request));
 
-        SyncByKey(foldersNode,
+        NavigatorTreeSync.SyncByKey(foldersNode,
             collection.Folders.Where(folder => folder.ParentFolderId == parentFolderId).OrderBy(folder => folder.SortOrder).ToList(),
             folder => folder.Id, node => node.Folder.Id, folder => new FolderTreeNode(folder));
 
-        SyncChildren(childrenNode, [.. foldersNode, .. requestsNode]);
+        NavigatorTreeSync.SyncChildren(childrenNode, [.. foldersNode, .. requestsNode]);
 
         foreach (var folderNode in foldersNode)
         {
             SyncFolderLevel(folderNode.Requests, folderNode.Folders, folderNode.Children, collection, folderNode.Folder.Id);
-        }
-    }
-
-    /// <summary>Reconciles a node's combined child list in place by identity, so unchanged
-    /// children keep their tree containers (and expand state).</summary>
-    private static void SyncChildren(ObservableCollection<object> target, IReadOnlyList<object> desired)
-    {
-        for (var i = 0; i < desired.Count; i++)
-        {
-            if (i < target.Count && ReferenceEquals(target[i], desired[i])) continue;
-            var existing = -1;
-            for (var j = i + 1; j < target.Count; j++)
-            {
-                if (ReferenceEquals(target[j], desired[i])) { existing = j; break; }
-            }
-            if (existing >= 0) target.Move(existing, i);
-            else target.Insert(i, desired[i]);
-        }
-
-        while (target.Count > desired.Count) target.RemoveAt(target.Count - 1);
-    }
-
-    /// <summary>Reconciles <paramref name="target"/> to match <paramref name="desired"/>, keyed by
-    /// id, reusing existing nodes (and their identity) wherever the key already exists rather than
-    /// recreating them - the point being that unrelated nodes are left completely untouched.</summary>
-    private static void SyncByKey<TModel, TNode>(
-        ObservableCollection<TNode> target,
-        IReadOnlyList<TModel> desired,
-        Func<TModel, Guid> modelKey,
-        Func<TNode, Guid> nodeKey,
-        Func<TModel, TNode> createNode,
-        Func<TNode, TModel, bool>? isCurrent = null)
-    {
-        var existingByKey = target.ToDictionary(nodeKey);
-
-        for (var i = 0; i < desired.Count; i++)
-        {
-            var key = modelKey(desired[i]);
-            if (i < target.Count && nodeKey(target[i]) == key)
-            {
-                if (isCurrent is not null && !isCurrent(target[i], desired[i]))
-                {
-                    target[i] = createNode(desired[i]);
-                }
-
-                continue;
-            }
-
-            if (existingByKey.TryGetValue(key, out var node))
-            {
-                target.Remove(node);
-                target.Insert(i, isCurrent is null || isCurrent(node, desired[i]) ? node : createNode(desired[i]));
-            }
-            else
-            {
-                target.Insert(i, createNode(desired[i]));
-            }
-        }
-
-        while (target.Count > desired.Count)
-        {
-            target.RemoveAt(target.Count - 1);
         }
     }
 }
